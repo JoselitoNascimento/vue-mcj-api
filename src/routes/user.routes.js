@@ -1,9 +1,8 @@
-// @ts-nocheck
 /**
  * Arquivo: src/routes/user.routes.js
  * Descrição: arquivo responsável pelas rotas da api relacionado a classe 'User'.
- * Data: 04/03/2020
- * Author Glaucia Lemos
+ * Data: 11/10/2020
+ * Author Joselito Nascimento
  */
 
 const router = require('express-promise-router')();
@@ -25,6 +24,9 @@ router.post('/users', [
 ], userController.createUser);
 
 // ==> Rota responsável por logar 'Usuario': (GET): localhost:3000/user
-router.get('/user', userController.loginUser);
+router.post('/user', [
+  check('email').isEmail().withMessage("email inválido!"),
+  check('password').isLength({ min: 8, max: 20 }).withMessage("tamanho de senha inválido!")
+], userController.loginUser);
 
 module.exports = router;
