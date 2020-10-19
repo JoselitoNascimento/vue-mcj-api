@@ -17,6 +17,7 @@ const userRoute = require('./routes/user.routes');
 const ufRoute = require('./routes/uf.routes');
 const municipiosRoute = require('./routes/municipio.routes');
 const cnaeRoute = require('./routes/cnae.routes');
+const gruposEmpresariaisRoute = require('./routes/grupoempresarial.routes');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,5 +29,6 @@ app.use('/', userRoute);
 app.use('/', ufRoute);
 app.use('/', municipiosRoute);
 app.use('/', cnaeRoute);
+app.use('/', gruposEmpresariaisRoute);
 
 module.exports = app;
