@@ -22,6 +22,25 @@ exports.createGrupo = async (req, res) => {
   });
 };
 
+exports.updateGrupo = async (req, res) => {
+  const { errors } = validationResult(req);
+  if (errors.length > 0) {
+    return res.status(400).send({ message: errors })
+  }
+  const { id, descricao, ativo, dt_alt, us_alt } = req.body;
+  const { rows } = await db.query(
+    "UPDATE gruposempresariais SET descricao =$2, ativo = $3, dt_alt = $4, us_alt = $5  WHERE id = $1 ",
+    [id, descricao, ativo, dt_alt, us_alt]
+  );
+
+  res.status(201).send({
+    message: "Grupo Empresarial alterado com sucesso!",
+    body: {
+      grupoempresarial: { descricao, ativo, dt_alt, us_alt }
+    },
+  });
+};
+
 // ==> Método responsável por listar todos os 'Grupos Empresariais':
 exports.listAllGrupos = async (_, res) => {
   const response = await db.query('SELECT id, descricao, ativo FROM gruposempresariais ORDER BY descricao ASC');

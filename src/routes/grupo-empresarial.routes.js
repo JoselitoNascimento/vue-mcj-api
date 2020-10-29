@@ -11,14 +11,19 @@ const grupoController = require('../controllers/grupo-empresarial.controller');
 
 // ==> Definindo as rotas do CRUD - 'User':
 
-// ==> Rota responsável por listar todos os 'Usuarios': (GET): localhost:3000/users
+// ==> Rota responsável por listar todos os 'Grupos empresariais': (GET): localhost:3000/grupos-empresariais
 router.get('/grupos-empresariais', grupoController.listAllGrupos);
 
-// ==> Rota responsável por criar um novo 'usuarios': (POST): localhost:3000/users
+// ==> Rota responsável por criar um novo 'Grupo empresarial': (POST): localhost:3000/grupos-empresariais
 router.post('/grupos-empresariais', [
-  check('descricao').isLength({ min: 6 }).withMessage("tamanho da descrição do grupo empresrial, inválido!"),
-  check('ativo').isIn(['A', 'I']).withMessage("situação do grupo empresrial inválida!")
+  check('descricao').isLength({ min: 6 }).withMessage("tamanho da descrição do grupo empresarial, inválido!"),
+  check('ativo').isIn(['A', 'I']).withMessage("situação do grupo empresarial inválida!")
 ], grupoController.createGrupo);
 
-// ==> Rota responsável por logar 'Usuario': (GET): localhost:3000/grupos-empresariais
+// ==> Rota responsável por alterar um 'Grupo empresarial': (PUT): localhost:3000/grupos-empresariais
+router.put('/grupos-empresariais', [
+  check('descricao').isLength({ min: 6 }).withMessage("tamanho da descrição do grupo empresarial, inválido!"),
+  check('ativo').isIn(['A', 'I']).withMessage("situação do grupo empresarial inválida!")
+], grupoController.updateGrupo);
+
 module.exports = router;
