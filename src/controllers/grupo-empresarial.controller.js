@@ -2,7 +2,6 @@ const db = require("../config/database");
 const { validationResult } = require('express-validator');
 
 // ==> Método responsável por criar um novo 'Grupo Empresarial':
-
 exports.createGrupo = async (req, res) => {
   const { errors } = validationResult(req);
   if (errors.length > 0) {
@@ -22,6 +21,7 @@ exports.createGrupo = async (req, res) => {
   });
 };
 
+// ==> Método responsável por alterar um 'Grupo Empresarial':
 exports.updateGrupo = async (req, res) => {
   const { errors } = validationResult(req);
   if (errors.length > 0) {
@@ -37,6 +37,22 @@ exports.updateGrupo = async (req, res) => {
     message: "Grupo Empresarial alterado com sucesso!",
     body: {
       grupoempresarial: { descricao, ativo, dt_alt, us_alt }
+    },
+  });
+};
+
+// ==> Método responsável por excluir um 'Grupo Empresarial':
+exports.deleteGrupoById = async (req, res) => {
+  const id = parseInt(req.params.id);
+  const { rows } = await db.query(
+    "DELETE FROM gruposempresariais WHERE id = $1",
+    [id]
+  );
+
+  res.status(201).send({
+    message: "Grupo Empresarial excluido com sucesso!",
+    body: {
+      grupoempresarial: { id }
     },
   });
 };

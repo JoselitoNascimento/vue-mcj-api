@@ -26,4 +26,7 @@ router.put('/grupos-empresariais', [
   check('ativo').isIn(['A', 'I']).withMessage("situação do grupo empresarial inválida!")
 ], grupoController.updateGrupo);
 
+// ==> Rota responsável por excluir um 'Grupo empresarial': (DELETE): localhost:3000/grupos-empresariais
+router.delete('/grupos-empresariais/:id', grupoController.deleteGrupoById);
+
 module.exports = router;
