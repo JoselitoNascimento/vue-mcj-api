@@ -19,6 +19,7 @@ const municipiosRoute = require('./routes/municipio.routes');
 const cnaeRoute = require('./routes/cnae.routes');
 const gruposEmpresariais = require('./routes/grupo-empresarial.routes');
 const acoes = require('./routes/acao.routes');
+const localizacoes = require('./routes/localizacao.routes');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -32,5 +33,6 @@ app.use('/', municipiosRoute);
 app.use('/', cnaeRoute);
 app.use('/', gruposEmpresariais);
 app.use('/', acoes);
+app.use('/', localizacoes);
 
 module.exports = app;

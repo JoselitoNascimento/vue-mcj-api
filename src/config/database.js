@@ -12,7 +12,12 @@ dotenv.config();
 
 // ==> Conexão com a Base de Dados:
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
+  //connectionString: process.env.DATABASE_URL
+  user: 'postgres',
+  host: '127.0.0.1',
+  database: 'dbJuridico',
+  password: '123',
+  port: 5432,  
 });
 
 pool.on('connect', () => {
