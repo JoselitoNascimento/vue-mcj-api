@@ -20,6 +20,7 @@ const cnaeRoute = require('./routes/cnae.routes');
 const gruposEmpresariais = require('./routes/grupo-empresarial.routes');
 const acoes = require('./routes/acao.routes');
 const localizacoes = require('./routes/localizacao.routes');
+const servicos = require('./routes/servicos.routes');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -34,5 +35,6 @@ app.use('/', cnaeRoute);
 app.use('/', gruposEmpresariais);
 app.use('/', acoes);
 app.use('/', localizacoes);
+app.use('/', servicos);
 
 module.exports = app;
