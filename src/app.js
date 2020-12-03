@@ -21,6 +21,7 @@ const gruposEmpresariais = require('./routes/grupo-empresarial.routes');
 const acoes = require('./routes/acao.routes');
 const localizacoes = require('./routes/localizacao.routes');
 const servicos = require('./routes/servicos.routes');
+const etapasProcessuais = require('./routes/etapas-processuais.routes');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -36,5 +37,6 @@ app.use('/', gruposEmpresariais);
 app.use('/', acoes);
 app.use('/', localizacoes);
 app.use('/', servicos);
+app.use('/', etapasProcessuais);
 
 module.exports = app;
