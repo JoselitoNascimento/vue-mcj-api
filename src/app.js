@@ -23,6 +23,7 @@ const localizacoes = require('./routes/localizacao.routes');
 const servicos = require('./routes/servicos.routes');
 const etapasProcessuais = require('./routes/etapas-processuais.routes');
 const orgaosCompetentes = require('./routes/orgaos-competentes.routes');
+const tipoOcorrencias = require('./routes/tipos-ocorrencias.routes');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -40,5 +41,6 @@ app.use('/', localizacoes);
 app.use('/', servicos);
 app.use('/', etapasProcessuais);
 app.use('/', orgaosCompetentes);
+app.use('/', tipoOcorrencias);
 
 module.exports = app;
