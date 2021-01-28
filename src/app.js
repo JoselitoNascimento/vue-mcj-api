@@ -25,6 +25,7 @@ const etapasProcessuais = require('./routes/etapas-processuais.routes');
 const orgaosCompetentes = require('./routes/orgaos-competentes.routes');
 const tipoOcorrencias = require('./routes/tipos-ocorrencias.routes');
 const entidades = require('./routes/entidade.routes');
+const tipoPessoas = require('./routes/tipos-pessoas.routes');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -44,5 +45,6 @@ app.use('/', etapasProcessuais);
 app.use('/', orgaosCompetentes);
 app.use('/', tipoOcorrencias);
 app.use('/', entidades);
+app.use('/', tipoPessoas);
 
 module.exports = app;
