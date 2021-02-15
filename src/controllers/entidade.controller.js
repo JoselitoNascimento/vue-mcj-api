@@ -1,8 +1,10 @@
 const db = require("../config/database");
 const { validationResult } = require('express-validator');
+//const { Pool } = require('pg');
+//const pool = new Pool();
 
 // ==> Método responsável por criar uma nova 'Ação':
-exports.createEntidade = async (req, res) => {
+/*exports.createEntidade = async (req, res) => {
   const { errors } = validationResult(req);
   if (errors.length > 0) {
     return res.status(400).send({ message: errors })
@@ -10,8 +12,7 @@ exports.createEntidade = async (req, res) => {
   const { pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, us_inc } = req.body;
   const { rows } = await db.query(
     "INSERT INTO entidades (pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id",
-    [pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, us_inc],
-    (res) => console.log('Retorno: ' + res.rows[0].id) /* parei aqui não está funcionando  12/02/2021*/
+    [pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, us_inc]
   );
   
 
@@ -21,6 +22,46 @@ exports.createEntidade = async (req, res) => {
       localizacao: { pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, us_inc }
     },
   });
+};
+*/
+exports.createEntidade = async (req, res) => {
+  const { errors } = validationResult(req);
+  if (errors.length > 0) {
+    return res.status(400).send({ message: 'Erros: ' + errors });
+  }
+  try {
+    const { pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, us_inc } = req.body;
+    await db.query('BEGIN');
+    const newEntidade = await db.query(
+      "INSERT INTO entidades (pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id",
+      [pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, us_inc]
+    );
+
+    console.log('ID: ' + newEntidade.rows[0].id);
+
+    const { nome_contato, porte_id, cnae_principal, grupo_empresarial_id } = req.body;
+    const newComplemento = await db.query(
+      "INSERT INTO entidades_dados_complementares (entidade_id, nome_contato, porte_id, cnae_principal, grupo_empresarial_id) VALUES ($1, $2, $3, $4, $5)",
+      [newEntidade.rows[0].id, nome_contato, porte_id, cnae_principal, grupo_empresarial_id]
+    );
+
+    await db.query('COMMIT')
+
+    console.log('ID: ' + newEntidade.rows[0].id);
+
+    res.status(201).send({
+      message: "Entidade adicionada com sucesso!",
+      body: { pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, us_inc },
+    });
+  } catch(err) {
+    await db.query('ROLLBACK');
+    res.status(201).send({
+      message: "Erro ocorrido ao inserir entidade!",
+      body: {
+        err
+      },
+    });
+  }  
 };
 
 // ==> Método responsável por alterar uma 'Ação':
