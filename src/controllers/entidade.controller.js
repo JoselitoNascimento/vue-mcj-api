@@ -49,18 +49,13 @@ exports.createEntidade = async (req, res) => {
 
     console.log('ID: ' + newEntidade.rows[0].id);
 
-    res.status(201).send({
+    return res.status(201).send({
       message: "Entidade adicionada com sucesso!",
       body: { pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, us_inc },
     });
   } catch(err) {
     await db.query('ROLLBACK');
-    res.status(201).send({
-      message: "Erro ocorrido ao inserir entidade!",
-      body: {
-        err
-      },
-    });
+    return res.status(409).send({ message: "Erro ocorrido ao inserir entidade: " + e});
   }  
 };
 
