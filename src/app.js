@@ -26,6 +26,7 @@ const orgaosCompetentes = require('./routes/orgaos-competentes.routes');
 const tipoOcorrencias = require('./routes/tipos-ocorrencias.routes');
 const entidades = require('./routes/entidade.routes');
 const tipoPessoas = require('./routes/tipos-pessoas.routes');
+const oabs = require('./routes/entidade-oabs.routes');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -46,5 +47,6 @@ app.use('/', orgaosCompetentes);
 app.use('/', tipoOcorrencias);
 app.use('/', entidades);
 app.use('/', tipoPessoas);
+app.use('/', oabs);
 
 module.exports = app;

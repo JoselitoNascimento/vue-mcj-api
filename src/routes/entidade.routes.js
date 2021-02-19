@@ -11,8 +11,11 @@ const entidade = require('../controllers/entidade.controller');
 
 // ==> Definindo as rotas do CRUD - 'Localização':
 
-// ==> Rota responsável por listar todas as 'Localizações': (GET): localhost:3000/localizacoes
+// ==> Rota responsável por listar todas as 'Entidades': (GET): localhost:3000/entidades
 router.get('/entidades', entidade.listAllEntidades);
+
+// ==> Rota responsável por listar Entidades por categoria': (GET): localhost:3000/categoria
+router.get('/entidades/categoria', entidade.listEntidadeCategoria);
 
 // ==> Rota responsável por criar um novo 'Grupo empresarial': (POST): localhost:3000/grupos-empresariais
 router.post('/entidades', [

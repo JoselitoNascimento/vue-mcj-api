@@ -24,6 +24,7 @@ const { validationResult } = require('express-validator');
   });
 };
 */
+// ==> Método responsável por criar uma nova 'Entidade':
 exports.createEntidade = async (req, res) => {
   const { errors } = validationResult(req);
   if (errors.length > 0) {
@@ -59,7 +60,7 @@ exports.createEntidade = async (req, res) => {
   }  
 };
 
-// ==> Método responsável por alterar uma 'Ação':
+// ==> Método responsável por alterar uma 'Entidade':
 exports.updateEntidade = async (req, res) => {
   const { errors } = validationResult(req);
   if (errors.length > 0) {
@@ -95,13 +96,13 @@ exports.deleteEntidadeById = async (req, res) => {
   });
 };
 
-// ==> Método responsável por listar todas as 'Ações':
+// ==> Método responsável por listar todas as 'Entidades':
 exports.listAllEntidades = async (_, res) => {
   const response = await db.query('SELECT id, pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, dt_alt, us_inc, us_alt FROM entidades ORDER BY nome ASC');
   res.status(200).send(response.rows);
 };
 
-// ==> Método responsável por listar a 'Ação':
+// ==> Método responsável por listar a 'Entidade':
 exports.listEntidade = async (req, res) => {
   const { errors } = validationResult(req);
   if (errors.length > 0) {
@@ -114,6 +115,23 @@ exports.listEntidade = async (req, res) => {
 
   if (response.rows.length == 0) {
     return res.status(400).send('Entidade não cadastrada!');
+  }
+
+  return res.status(200).send(response.rows);
+
+};
+
+// ==> Método responsável por listar por 'Tipo de Pessoa':
+exports.listEntidadeCategoria = async (req, res) => {
+  let urlIdx = JSON.stringify(req.url);
+  let pessoa_id = urlIdx.substring(32,33);
+
+  const response = await db.query('SELECT id, nome FROM entidades WHERE pessoa_id = $1 AND ativo = $2 ',
+    [pessoa_id, 'A']
+  );
+
+  if (response.rows.length == 0) {
+    return res.status(400).send(`Nao foi encontrado nenhum registro para categoria ${pessoa_id}!`);
   }
 
   return res.status(200).send(response.rows);
