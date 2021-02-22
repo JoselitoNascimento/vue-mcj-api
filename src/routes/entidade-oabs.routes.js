@@ -12,6 +12,6 @@ const oabs = require('../controllers/entidade-oab.controller');
 // ==> Definindo as rotas do CRUD - 'OABs da entidade':
 
 // ==> Rota responsável por listar todas as 'OABs': (GET): localhost:3000/entidade-oabs
-router.get('/entidade-oabs', oabs.listOabsEntidade);
+router.get('/entidade-oabs/:id', oabs.listOabsEntidade);
 
 module.exports = router;
