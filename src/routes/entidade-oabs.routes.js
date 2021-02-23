@@ -6,7 +6,6 @@
  */
 
 const router = require('express-promise-router')();
-const { check } = require('express-validator');
 const oabs = require('../controllers/entidade-oab.controller');
 
 // ==> Definindo as rotas do CRUD - 'OABs da entidade':
