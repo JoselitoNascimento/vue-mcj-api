@@ -28,6 +28,7 @@ const entidades = require('./routes/entidade.routes');
 const tipoPessoas = require('./routes/tipos-pessoas.routes');
 const oabs = require('./routes/entidade-oabs.routes');
 const emails = require('./routes/entidade-emails.routes');
+const estagiarios = require('./routes/entidade-estagiarios.routes');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -50,5 +51,6 @@ app.use('/', entidades);
 app.use('/', tipoPessoas);
 app.use('/', oabs);
 app.use('/', emails);
+app.use('/', estagiarios);
 
 module.exports = app;
