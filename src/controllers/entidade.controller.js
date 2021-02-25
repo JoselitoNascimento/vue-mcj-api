@@ -98,7 +98,12 @@ exports.deleteEntidadeById = async (req, res) => {
 
 // ==> Método responsável por listar todas as 'Entidades':
 exports.listAllEntidades = async (_, res) => {
-  const response = await db.query('SELECT id, pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, dt_alt, us_inc, us_alt FROM entidades ORDER BY nome ASC');
+  const response = await db.query('SELECT entidades.id, pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ' + 
+                                  'endereco, numero, bairro, cidade_ibge, uf, cep, entidades.ativo, entidades.dt_inc, ' + 
+                                  'entidades.dt_alt, entidades.us_inc, entidades.us_alt, descricao as categoria ' + 
+                                  'FROM entidades ' + 
+                                  'INNER JOIN tiposdepessoa ON (tiposdepessoa.id = entidades.pessoa_id) ' + 
+                                  'ORDER BY nome ASC');
   res.status(200).send(response.rows);
 };
 
@@ -109,8 +114,13 @@ exports.listEntidade = async (req, res) => {
     return res.status(400).send({ message: errors })
   }
   const id = req.body.id;
-  const response = await db.query('SELECT id, pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, dt_alt, us_inc, us_alt FROM entidades WHERE id = $1 ',
-    [id]
+  const response = await db.query('SELECT entidades.id, pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ' + 
+                                  'endereco, numero, bairro, cidade_ibge, uf, cep, entidades.ativo, entidades.dt_inc, ' +
+                                  'entidades.dt_alt, entidades.us_inc, entidades.us_alt, descricao as categoria ' +
+                                  'FROM entidades ' +
+                                  'INNER JOIN tiposdepessoa ON (tiposdepessoa.id = entidades.pessoa_id) ' + 
+                                  'WHERE entidades.id = $1 ', 
+                                  [id]
   );
 
   if (response.rows.length == 0) {
