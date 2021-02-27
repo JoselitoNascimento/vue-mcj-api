@@ -11,6 +11,6 @@ const estagiarios = require('../controllers/entidade-estagiario.controller');
 // ==> Definindo as rotas do CRUD - 'Estagiários da entidade':
 
 // ==> Rota responsável por listar todos os 'Estagiários': (GET): localhost:3000/entidade-estagiarios
-router.get('/entidade-estagiarios/:id', estagiarios.listEstagiariosEntidade);
+router.get('/entidade-estagiarios/:entidade_id', estagiarios.listEstagiariosEntidade);
 
 module.exports = router;

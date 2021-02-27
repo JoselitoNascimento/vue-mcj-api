@@ -11,6 +11,6 @@ const emails = require('../controllers/entidade-email.controller');
 // ==> Definindo as rotas do CRUD - 'Emails da entidade':
 
 // ==> Rota responsável por listar todos os 'Emails': (GET): localhost:3000/entidade-emails
-router.get('/entidade-emails/:id', emails.listEmailsEntidade);
+router.get('/entidade-emails/:entidade_id', emails.listEmailsEntidade);
 
 module.exports = router;
