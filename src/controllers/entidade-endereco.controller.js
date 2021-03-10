@@ -5,7 +5,7 @@ const { validationResult } = require('express-validator');
 exports.listEnderecosEntidade = async (req, res) => {
 
   const { entidade_id } = req.params;
-
+  
   const response = await db.query('SELECT entidade_id, cep, logradouro, numero, bairro, cidade_ibge, uf, complemento FROM entidades_enderecos WHERE entidade_id = $1 ',
     [entidade_id]
   );
