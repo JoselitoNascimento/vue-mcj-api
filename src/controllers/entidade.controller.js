@@ -38,13 +38,25 @@ exports.createEntidade = async (req, res) => {
       [pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ativo, dt_inc, us_inc]
     );
 
-    console.log('ID: ' + newEntidade.rows[0].id);
+//    console.log('ID: ' + newEntidade.rows[0].id);
 
-    const { nome_contato, porte_id, cnae_principal, grupo_empresarial_id } = req.body;
-    const newComplemento = await db.query(
-      "INSERT INTO entidades_dados_complementares (entidade_id, nome_contato, porte_id, cnae_principal, grupo_empresarial_id) VALUES ($1, $2, $3, $4, $5)",
-      [newEntidade.rows[0].id, nome_contato, porte_id, cnae_principal, grupo_empresarial_id]
-    );
+    if (pessoa_id == 1 || pessoa_id == 2) {
+      const { nome_contato, porte_id, cnae_principal, grupo_empresarial_id } = req.body;
+      const newComplemento = await db.query(
+        "INSERT INTO entidades_dados_complementares (entidade_id, nome_contato, porte_id, cnae_principal, grupo_empresarial_id) VALUES ($1, $2, $3, $4, $5)",
+        [newEntidade.rows[0].id, nome_contato, porte_id, cnae_principal, grupo_empresarial_id]
+      );
+    }
+
+    const { enderecos } = req.body;
+    if (enderecos) {
+      const { entidade_id, cep, logradouro, numero, bairro, cidade_ibge, uf, complemento } = enderecos;
+      const newEndereco = await db.query(
+        "INSERT INTO entidades_dados_complementares (entidade_id, nome_contato, porte_id, cnae_principal, grupo_empresarial_id) VALUES ($1, $2, $3, $4, $5)",
+        [newEntidade.rows[0].id, nome_contato, porte_id, cnae_principal, grupo_empresarial_id]
+      );
+    }
+
 
     await db.query('COMMIT')
 
