@@ -28,47 +28,84 @@ const { validationResult } = require('express-validator');
 exports.createEntidade = async (req, res) => {
   const { errors } = validationResult(req);
   if (errors.length > 0) {
-    return res.status(400).send({ message: 'Erros: ' + errors });
+    const erro = res.status(400).send({ message: 'Erros: ' + errors });
+    console.log('Erro: ' + JSON.stringify(errors));
+    return erro;
   }
   try {
+    console.log(req.body);
     const { pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ativo, dt_inc, us_inc } = req.body;
     await db.query('BEGIN');
     const newEntidade = await db.query(
-      "INSERT INTO entidades (pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id",
+      "INSERT INTO entidades (pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id",
       [pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ativo, dt_inc, us_inc]
     );
-
-//    console.log('ID: ' + newEntidade.rows[0].id);
-
+    const newID = newEntidade.rows[0].id;
+    // Dados complementares apenas para Cliente=1 e Fornecedor=2   
     if (pessoa_id == 1 || pessoa_id == 2) {
       const { nome_contato, porte_id, cnae_principal, grupo_empresarial_id } = req.body;
       const newComplemento = await db.query(
         "INSERT INTO entidades_dados_complementares (entidade_id, nome_contato, porte_id, cnae_principal, grupo_empresarial_id) VALUES ($1, $2, $3, $4, $5)",
-        [newEntidade.rows[0].id, nome_contato, porte_id, cnae_principal, grupo_empresarial_id]
+        [newID, nome_contato, porte_id, cnae_principal, grupo_empresarial_id]
       );
     }
-
+    // Dados do endereço é para todos 
     const { enderecos } = req.body;
+    console.log('Endereços: ' + JSON.stringify(enderecos));
     if (enderecos) {
-      const { entidade_id, cep, logradouro, numero, bairro, cidade_ibge, uf, complemento } = enderecos;
-      const newEndereco = await db.query(
-        "INSERT INTO entidades_dados_complementares (entidade_id, nome_contato, porte_id, cnae_principal, grupo_empresarial_id) VALUES ($1, $2, $3, $4, $5)",
-        [newEntidade.rows[0].id, nome_contato, porte_id, cnae_principal, grupo_empresarial_id]
-      );
+      for (let index = 0; index < enderecos.length; index++) {
+        const { cep, logradouro, numero, bairro, cidade_ibge, uf, complemento } = enderecos[index];
+        const newEndereco = await db.query(
+          "INSERT INTO entidades_enderecos (entidade_id, cep, logradouro, numero, bairro, cidade_ibge, uf, complemento, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
+          [newID, cep, logradouro, numero, bairro, cidade_ibge, uf, complemento, ativo, dt_inc, us_inc]
+        );
+      }
+    }  
+    // Dados da OAB apenas para advogados   
+    const { oabs } = req.body;
+    if (oabs) {
+      for (let index = 0; index < oabs.length; index++) {
+        const { numero_oab, uf_oab, ativo, dt_inc, us_inc } = oabs[index];
+        const newOab = await db.query(
+          "INSERT INTO entidades_oab (entidade_id, numero_oab, uf_oab, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6)",
+          [newID, numero_oab, uf_oab, ativo, dt_inc, us_inc]
+        );
+//        console.log('OABs ' + newOab);
+      }  
     }
-
-
+/*
+    // Dados do estagiário apenas para advogados 
+    const { estagiarios } = req.body;
+    if (estagiarios) {
+      const { estagiario_id, dt_inicio, dt_final, ativo, dt_inc, us_inc } = estagiarios;
+      const newEstagiario = await db.query(
+        "INSERT INTO entidades_estagiario (entidade_id, estagiario_id, dt_inicio, dt_final, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+        [newEntidade.rows[0].id, estagiario_id, dt_inicio, dt_final, ativo, dt_inc, us_inc]
+      );
+      console.log('Estagiario: ' + newEstagiario);
+    }
+    // Dados do email é para todos   
+    const { emails } = req.body;
+    if (emails) {
+      const { conta, email, ativo, dt_inc, us_inc } = emails;
+      const newEmail = await db.query(
+        "INSERT INTO entidades_email (entidade_id, conta, email, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6)",
+        [newEntidade.rows[0].id, conta, email, ativo, dt_inc, us_inc]
+      );
+      console.log('Email: ' + newEmail);
+    }
+*/
     await db.query('COMMIT')
-
-    console.log('ID: ' + newEntidade.rows[0].id);
 
     return res.status(201).send({
       message: "Entidade adicionada com sucesso!",
       body: { pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ativo, dt_inc, us_inc },
     });
   } catch(err) {
+    const erro = res.status(409).send({ message: "Erro ocorrido ao inserir entidade: " + err});
+    //console.log(erro);
     await db.query('ROLLBACK');
-    return res.status(409).send({ message: "Erro ocorrido ao inserir entidade: " + e});
+    return erro;
   }  
 };
 
