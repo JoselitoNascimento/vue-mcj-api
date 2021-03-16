@@ -1,29 +1,6 @@
 const db = require("../config/database");
 const { validationResult } = require('express-validator');
-//const { Pool } = require('pg');
-//const pool = new Pool();
 
-// ==> Método responsável por criar uma nova 'Ação':
-/*exports.createEntidade = async (req, res) => {
-  const { errors } = validationResult(req);
-  if (errors.length > 0) {
-    return res.status(400).send({ message: errors })
-  }
-  const { pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, us_inc } = req.body;
-  const { rows } = await db.query(
-    "INSERT INTO entidades (pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id",
-    [pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, us_inc]
-  );
-  
-
-  res.status(201).send({
-    message: "Entidade adicionada com sucesso!",
-    body: {
-      localizacao: { pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, endereco, numero, bairro, cidade_ibge, uf, cep, ativo, dt_inc, us_inc }
-    },
-  });
-};
-*/
 // ==> Método responsável por criar uma nova 'Entidade':
 exports.createEntidade = async (req, res) => {
   const { errors } = validationResult(req);
@@ -33,7 +10,6 @@ exports.createEntidade = async (req, res) => {
     return erro;
   }
   try {
-    console.log(req.body);
     const { pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ativo, dt_inc, us_inc } = req.body;
     await db.query('BEGIN');
     const newEntidade = await db.query(
@@ -44,18 +20,17 @@ exports.createEntidade = async (req, res) => {
     // Dados complementares apenas para Cliente=1 e Fornecedor=2   
     if (pessoa_id == 1 || pessoa_id == 2) {
       const { nome_contato, porte_id, cnae_principal, grupo_empresarial_id } = req.body;
-      const newComplemento = await db.query(
+      await db.query(
         "INSERT INTO entidades_dados_complementares (entidade_id, nome_contato, porte_id, cnae_principal, grupo_empresarial_id) VALUES ($1, $2, $3, $4, $5)",
         [newID, nome_contato, porte_id, cnae_principal, grupo_empresarial_id]
       );
     }
     // Dados do endereço é para todos 
     const { enderecos } = req.body;
-    console.log('Endereços: ' + JSON.stringify(enderecos));
     if (enderecos) {
       for (let index = 0; index < enderecos.length; index++) {
         const { cep, logradouro, numero, bairro, cidade_ibge, uf, complemento } = enderecos[index];
-        const newEndereco = await db.query(
+        await db.query(
           "INSERT INTO entidades_enderecos (entidade_id, cep, logradouro, numero, bairro, cidade_ibge, uf, complemento, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
           [newID, cep, logradouro, numero, bairro, cidade_ibge, uf, complemento, ativo, dt_inc, us_inc]
         );
@@ -65,36 +40,35 @@ exports.createEntidade = async (req, res) => {
     const { oabs } = req.body;
     if (oabs) {
       for (let index = 0; index < oabs.length; index++) {
-        const { numero_oab, uf_oab, ativo, dt_inc, us_inc } = oabs[index];
-        const newOab = await db.query(
+        const { numero_oab, uf_oab } = oabs[index];
+        await db.query(
           "INSERT INTO entidades_oab (entidade_id, numero_oab, uf_oab, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6)",
           [newID, numero_oab, uf_oab, ativo, dt_inc, us_inc]
         );
-//        console.log('OABs ' + newOab);
       }  
     }
-/*
     // Dados do estagiário apenas para advogados 
     const { estagiarios } = req.body;
     if (estagiarios) {
-      const { estagiario_id, dt_inicio, dt_final, ativo, dt_inc, us_inc } = estagiarios;
-      const newEstagiario = await db.query(
-        "INSERT INTO entidades_estagiario (entidade_id, estagiario_id, dt_inicio, dt_final, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-        [newEntidade.rows[0].id, estagiario_id, dt_inicio, dt_final, ativo, dt_inc, us_inc]
-      );
-      console.log('Estagiario: ' + newEstagiario);
+      for (let index = 0; index < estagiarios.length; index++) {
+        const { estagiario_id, dt_inicio, dt_final } = estagiarios[index];
+        await db.query(
+          "INSERT INTO entidades_estagiario (entidade_id, estagiario_id, dt_inicio, dt_final, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+          [newID, estagiario_id, dt_inicio, dt_final, ativo, dt_inc, us_inc]
+        );
+      }  
     }
     // Dados do email é para todos   
     const { emails } = req.body;
     if (emails) {
-      const { conta, email, ativo, dt_inc, us_inc } = emails;
-      const newEmail = await db.query(
-        "INSERT INTO entidades_email (entidade_id, conta, email, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6)",
-        [newEntidade.rows[0].id, conta, email, ativo, dt_inc, us_inc]
-      );
-      console.log('Email: ' + newEmail);
+      for (let index = 0; index < emails.length; index++) {
+        const { conta, email } = emails[index];
+        await db.query(
+          "INSERT INTO entidades_email (entidade_id, conta, email, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6)",
+          [newID, conta, email, ativo, dt_inc, us_inc]
+        );
+      }  
     }
-*/
     await db.query('COMMIT')
 
     return res.status(201).send({
@@ -103,7 +77,7 @@ exports.createEntidade = async (req, res) => {
     });
   } catch(err) {
     const erro = res.status(409).send({ message: "Erro ocorrido ao inserir entidade: " + err});
-    //console.log(erro);
+    console.log('Erro... ' + err);
     await db.query('ROLLBACK');
     return erro;
   }  
@@ -180,9 +154,7 @@ exports.listEntidade = async (req, res) => {
 
 // ==> Método responsável por listar por 'Tipo de Pessoa':
 exports.listEntidadeCategoria = async (req, res) => {
-  let urlIdx = JSON.stringify(req.url);
-  let pessoa_id = urlIdx.substring(32,33);
-
+  const pessoa_id = req.params.id;
   const response = await db.query('SELECT id, nome FROM entidades WHERE pessoa_id = $1 AND ativo = $2 ',
     [pessoa_id, 'A']
   );
@@ -190,7 +162,8 @@ exports.listEntidadeCategoria = async (req, res) => {
   if (response.rows.length == 0) {
     return res.status(400).send(`Nao foi encontrado nenhum registro para categoria ${pessoa_id}!`);
   }
-
+  
   return res.status(200).send(response.rows);
 
 };
+

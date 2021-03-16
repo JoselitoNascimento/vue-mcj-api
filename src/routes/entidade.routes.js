@@ -15,7 +15,7 @@ const entidade = require('../controllers/entidade.controller');
 router.get('/entidades', entidade.listAllEntidades);
 
 // ==> Rota responsável por listar Entidades por categoria': (GET): localhost:3000/categoria
-router.get('/entidades/categoria', entidade.listEntidadeCategoria);
+router.get('/entidades/categoria/:id', entidade.listEntidadeCategoria);
 
 // ==> Rota responsável por criar um novo 'Grupo empresarial': (POST): localhost:3000/grupos-empresariais
 router.post('/entidades', [
