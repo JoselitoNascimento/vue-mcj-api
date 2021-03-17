@@ -5,9 +5,7 @@ const { validationResult } = require('express-validator');
 exports.createEntidade = async (req, res) => {
   const { errors } = validationResult(req);
   if (errors.length > 0) {
-    const erro = res.status(400).send({ message: 'Erros: ' + errors });
-    console.log('Erro: ' + JSON.stringify(errors));
-    return erro;
+    return res.status(400).send({ message: 'Erros ocorridos ao validar campo ' + errors[0].param + ': ' + errors[0].msg});
   }
   try {
     const { pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ativo, dt_inc, us_inc } = req.body;
@@ -76,8 +74,7 @@ exports.createEntidade = async (req, res) => {
       body: { pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ativo, dt_inc, us_inc },
     });
   } catch(err) {
-    const erro = res.status(409).send({ message: "Erro ocorrido ao inserir entidade: " + err});
-    console.log('Erro... ' + err);
+    const erro = res.status(409).send({ message: "Erro ocorrido ao inserir entidade: " + err.detail });
     await db.query('ROLLBACK');
     return erro;
   }  
