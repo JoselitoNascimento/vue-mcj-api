@@ -47,7 +47,7 @@ exports.loginUser = async (req, res) => {
 
   //const password = bcrypt.hashSync(req.body.password, salt);
   const password = req.body.password;
-  const response = await db.query('SELECT user_name, password, perfil_id, entidade_id FROM usuarios WHERE email = $1 ',
+  const response = await db.query('SELECT id, user_name, password, perfil_id, entidade_id FROM usuarios WHERE email = $1 ',
     [email]
   );
 

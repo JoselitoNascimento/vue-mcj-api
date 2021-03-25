@@ -86,18 +86,101 @@ exports.updateEntidade = async (req, res) => {
   if (errors.length > 0) {
     return res.status(400).send({ message: errors })
   }
-  const { id, pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ativo, dt_alt, us_alt } = req.body;
-  const { rows } = await db.query(
-    "UPDATE entidades SET pessoa_id =$2, pessoa_tipo =$2, nome =$4, fantasia =$5, cnpj_cpf =$6, insc_mun =$7, insc_est =$8, ativo =$9, dt_alt = $10, us_alt = $11  WHERE id = $1 ",
-    [ id, pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ativo, dt_alt, us_alt ]
-  );
+  try {
+    const { id, pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ativo, dt_alt, us_alt } = req.body;
+    await db.query('BEGIN');
+    const { rows } = await db.query(
+      "UPDATE entidades SET pessoa_id =$2, pessoa_tipo =$3, nome =$4, fantasia =$5, cnpj_cpf =$6, insc_mun =$7, insc_est =$8, ativo =$9, dt_alt = $10, us_alt = $11  WHERE id = $1 ",
+      [ id, pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ativo, dt_alt, us_alt ]
+    );
+    // Dados complementares apenas para Cliente=1 e Fornecedor=2   
+    if (pessoa_id == 1 || pessoa_id == 2) {
+      const { rows } = await db.query(
+        "DELETE FROM entidades_dados_complementares WHERE entidade_id = $1",
+        [id]
+      );
+      const { nome_contato, porte_id, cnae_principal, grupo_empresarial_id } = req.body;
+      await db.query(
+        "INSERT INTO entidades_dados_complementares (entidade_id, nome_contato, porte_id, cnae_principal, grupo_empresarial_id) VALUES ($1, $2, $3, $4, $5)",
+        [id, nome_contato, porte_id, cnae_principal, grupo_empresarial_id]
+      );
+    }
+    // Data de inclusão é para as demais tabelas
+    const dt_inc = new Date().toLocaleDateString("pt-BR");
+    // Dados do endereço é para todos 
+    const { enderecos } = req.body;
+    if (enderecos) {
+      const { rows } = await db.query(
+        "DELETE FROM entidades_enderecos WHERE entidade_id = $1",
+        [id]
+      );
+      for (let index = 0; index < enderecos.length; index++) {
+        const { cep, logradouro, numero, bairro, cidade_ibge, uf, complemento } = enderecos[index];
+        await db.query(
+          "INSERT INTO entidades_enderecos (entidade_id, cep, logradouro, numero, bairro, cidade_ibge, uf, complemento, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
+          [id, cep, logradouro, numero, bairro, cidade_ibge, uf, complemento, ativo, dt_inc, us_alt]
+        );
+      }
+    }  
+    // Dados da OAB apenas para advogados   
+    const { oabs } = req.body;
+    if (oabs) {
+      const { rows } = await db.query(
+        "DELETE FROM entidades_oab WHERE entidade_id = $1",
+        [id]
+      );
+      for (let index = 0; index < oabs.length; index++) {
+        const { numero_oab, uf_oab } = oabs[index];
+        await db.query(
+          "INSERT INTO entidades_oab (entidade_id, numero_oab, uf_oab, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6)",
+          [id, numero_oab, uf_oab, ativo, dt_inc, us_alt]
+        );
+      }  
+    }
+    // Dados do estagiário apenas para advogados 
+    const { estagiarios } = req.body;
+    if (estagiarios) {
+      const { rows } = await db.query(
+        "DELETE FROM entidades_estagiario WHERE entidade_id = $1",
+        [id]
+      );
+      for (let index = 0; index < estagiarios.length; index++) {
+        const { estagiario_id, dt_inicio, dt_final } = estagiarios[index];
+        await db.query(
+          "INSERT INTO entidades_estagiario (entidade_id, estagiario_id, dt_inicio, dt_final, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+          [id, estagiario_id, dt_inicio, dt_final, ativo, dt_inc, us_alt]
+        );
+      }  
+    }
+    // Dados do email é para todos   
+    const { emails } = req.body;
+    if (emails) {
+      const { rows } = await db.query(
+        "DELETE FROM entidades_email WHERE entidade_id = $1",
+        [id]
+      );
+      for (let index = 0; index < emails.length; index++) {
+        const { conta, email } = emails[index];
+        await db.query(
+          "INSERT INTO entidades_email (entidade_id, conta, email, ativo, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6)",
+          [id, conta, email, ativo, dt_inc, us_alt]
+        );
+      }  
+    }
+    await db.query('COMMIT')
 
-  res.status(201).send({
-    message: "Entidade alterada com sucesso!",
-    body: {
-      localizacao: { pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ativo, dt_alt, us_alt }
-    },
-  });
+    res.status(201).send({
+      message: "Entidade alterada com sucesso!",
+      body: {
+        localizacao: { pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ativo, dt_alt, us_alt }
+      },
+    });
+
+  } catch(err) {
+    const erro = res.status(409).send({ message: "Erro ocorrido ao alterar entidade: " + err.detail });
+    await db.query('ROLLBACK');
+    return erro;
+  }  
 };
 
 // ==> Método responsável por excluir uma 'Ação':

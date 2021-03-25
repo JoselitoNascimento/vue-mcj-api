@@ -26,39 +26,23 @@ router.post('/entidades', [
   check('cnpj_cpf').isLength({ min: 11, max: 14 }).withMessage('CNPJ/CPF da entidade inválido!'),
   check('ativo').isIn(['A', 'I']).withMessage('conteúdo do campo inválido!'),
   check('nome_contato','conteúdo do campo não informado!').custom((value,{req}) => {
-    console.log(req.body);
     const {pessoa_id, nome_contato} = req.body;
     if (pessoa_id < 3) { return nome_contato } else {return true}
   }),
-/*
-  nome_contato         : this.fieldCategoria.id < 3 ? this.fieldContato : null,
-*/
-/* ver cono fazer essas validações
-  check('endereco').isLength({ min: 1 }).withMessage("endereço da entidade inválido!"),
-  check('bairro').isLength({ min: 1 }).withMessage("bairro da entidade inválido!"),
-  check('cidade_ibge').isLength({ min: 1 }).withMessage("cidade da entidade inválida!").isInt().withMessage("codigo da cidade inválido!"),
-  check('cep').isLength({ min: 8 , max: 8 }).withMessage("cep da entidade, inválido!"),
-  check('cep').custom((value, {req}) => {
-    if (req.body.pessoa_id == 1 && value == "") {
-      return false;
-    } 
-    return true;
-  }).withMessage("cep não informado!"),
-*/
 ], entidade.createEntidade);
 
 // ==> Rota responsável por alterar um 'Grupo empresarial': (PUT): localhost:3000/grupos-empresariais
 router.put('/entidades', [
-  check('pessoa_id').isInt().withMessage("categoria da entidade inválida!"),
-  check('pessoa_tipo').isIn(['F', 'J']).withMessage("tipo de pessoa inválida!"),
-  check('nome').isLength({ min: 6 }).withMessage("razão social da entidade inválido!"),
+  check('pessoa_id').isInt().withMessage("conteúdo do campo inválido!"),
+  check('pessoa_tipo').isIn(['F', 'J']).withMessage("conteúdo do campo inválido!"),
+  check('nome').isLength({ min: 6 }).withMessage("conteúdo com tamanho inválido!"),
   check('fantasia').isLength({ min: 6 }).withMessage("nome de fantasia da entidade inválido!"),
   check('cnpj_cpf').isLength({ min: 11, max: 14 }).withMessage("CNPJ/CPF da entidade inválido!"),
-  check('endereco').isLength({ min: 1 }).withMessage("endereço da entidade inválido!"),
-  check('bairro').isLength({ min: 1 }).withMessage("bairro da entidade inválido!"),
-  check('cidade_ibge').isLength({ min: 1 }).withMessage("cidade da entidade inválida!").isInt().withMessage("codigo da cidade inválido!"),
-  check('cep').isLength({ min: 8 , max: 8 }).withMessage("cep da entidade, inválido!"),
-  check('ativo').isIn(['A', 'I']).withMessage("situação da localização inválida!"),
+  check('ativo').isIn(['A', 'I']).withMessage("conteúdo do campo inválido!"),
+  check('nome_contato','conteúdo do campo não informado!').custom((value,{req}) => {
+    const {pessoa_id, nome_contato} = req.body;
+    if (pessoa_id < 3) { return nome_contato } else {return true}
+  }),
 ], entidade.updateEntidade);
 
 // ==> Rota responsável por excluir um 'Grupo empresarial': (DELETE): localhost:3000/grupos-empresariais
