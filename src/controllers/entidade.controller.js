@@ -186,17 +186,24 @@ exports.updateEntidade = async (req, res) => {
 // ==> Método responsável por excluir uma 'Ação':
 exports.deleteEntidadeById = async (req, res) => {
   const id = parseInt(req.params.id);
-  const { rows } = await db.query(
-    "DELETE FROM entidades WHERE id = $1",
-    [id]
-  );
+  console.log(id);
+  try {
+    await db.query(
+      "DELETE FROM entidades WHERE id = $1",
+      [id]
+    );
 
-  res.status(201).send({
-    message: "Entidade excluida com sucesso!",
-    body: {
-      localizacao: { id }
-    },
-  });
+    res.status(201).send({
+      message: "Entidade excluida com sucesso!",
+      body: {
+        localizacao: { id }
+      },
+    });
+  } catch(err) {
+    const erro = res.status(409).send({ message: "Erro ocorrido ao excluir entidade: " + err.detail });
+    console.log(erro);
+    return erro;
+  }  
 };
 
 // ==> Método responsável por listar todas as 'Entidades':
