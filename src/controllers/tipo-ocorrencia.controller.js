@@ -30,7 +30,7 @@ exports.updateTipoOcorrencia = async (req, res) => {
   const { id, descricao, tipo_faturar, ativo, dt_alt, us_alt } = req.body;
   const { rows } = await db.query(
     "UPDATE tiposdeocorrencia SET descricao =$2, tipo_faturar = $3, ativo = $4, dt_alt = $5, us_alt = $6  WHERE id = $1 ",
-    [id, descricao, ativo, dt_alt, us_alt]
+    [id, descricao, tipo_faturar, ativo, dt_alt, us_alt]
   );
 
   res.status(201).send({
