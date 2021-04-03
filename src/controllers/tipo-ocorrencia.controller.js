@@ -59,7 +59,7 @@ exports.deleteTipoOcorrenciaById = async (req, res) => {
 
 // ==> Método responsável por listar todas as 'Ações':
 exports.listAllTiposOcorrencia = async (_, res) => {
-  const response = await db.query('SELECT id, descricao, ativo FROM tiposdeocorrencia ORDER BY descricao ASC');
+  const response = await db.query('SELECT id, descricao, tipo_faturar, ativo FROM tiposdeocorrencia ORDER BY descricao ASC');
   res.status(200).send(response.rows);
 };
 
