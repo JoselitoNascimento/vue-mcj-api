@@ -16,8 +16,8 @@ const pool = new Pool({
   user: 'postgres',
   host: '127.0.0.1',
   database: 'dbJuridico',
-//  password: '123', // Senha escritório
-  password: '123@123', // Senha notebook casa
+  password: '123', // Senha escritório
+//  password: '123@123', // Senha notebook casa
   port: 5432,  
 });
 

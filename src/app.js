@@ -30,6 +30,7 @@ const oabs = require('./routes/entidade-oabs.routes');
 const emails = require('./routes/entidade-emails.routes');
 const estagiarios = require('./routes/entidade-estagiarios.routes');
 const enderecos = require('./routes/entidade-enderecos.routes');
+const parceiros = require('./routes/entidade-parceiros.routes');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -54,5 +55,6 @@ app.use('/', oabs);
 app.use('/', emails);
 app.use('/', estagiarios);
 app.use('/', enderecos);
+app.use('/', parceiros);
 
 module.exports = app;

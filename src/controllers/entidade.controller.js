@@ -67,6 +67,18 @@ exports.createEntidade = async (req, res) => {
         );
       }  
     }
+    // Dados de parceiros apenas para parceiros
+    const { parceiros } = req.body;
+    if (parceiros) {
+      for (let index = 0; index < emails.length; index++) {
+        const { parceiro_id } = parceiros[index];
+        await db.query(
+          "INSERT INTO entidades_parceiros (entidade_id, parceiro_id) VALUES ($1, $2)",
+          [id, parceiro_id]
+        );
+      }  
+    }
+
     await db.query('COMMIT')
 
     return res.status(201).send({
@@ -167,6 +179,21 @@ exports.updateEntidade = async (req, res) => {
         );
       }  
     }
+    // Dados de parceiros apenas para parceiros
+    const { parceiros } = req.body;
+    if (parceiros) {
+      const { rows } = await db.query(
+        "DELETE FROM entidades_parceiros WHERE entidade_id = $1",
+        [id]
+      );
+      for (let index = 0; index < emails.length; index++) {
+        const { parceiro_id } = parceiros[index];
+        await db.query(
+          "INSERT INTO entidades_parceiros (entidade_id, parceiro_id) VALUES ($1, $2)",
+          [id, parceiro_id]
+        );
+      }  
+    }
     await db.query('COMMIT')
 
     res.status(201).send({
@@ -186,7 +213,6 @@ exports.updateEntidade = async (req, res) => {
 // ==> Método responsável por excluir uma 'Ação':
 exports.deleteEntidadeById = async (req, res) => {
   const id = parseInt(req.params.id);
-  console.log(id);
   try {
     await db.query(
       "DELETE FROM entidades WHERE id = $1",
@@ -201,7 +227,6 @@ exports.deleteEntidadeById = async (req, res) => {
     });
   } catch(err) {
     const erro = res.status(409).send({ message: "Erro ocorrido ao excluir entidade: " + err.detail });
-    console.log(erro);
     return erro;
   }  
 };
@@ -242,15 +267,20 @@ exports.listEntidade = async (req, res) => {
 // ==> Método responsável por listar por 'Tipo de Pessoa':
 exports.listEntidadeCategoria = async (req, res) => {
   const pessoa_id = req.params.id;
-  const response = await db.query('SELECT id, nome FROM entidades WHERE pessoa_id = $1 AND ativo = $2 ',
-    [pessoa_id, 'A']
-  );
+  //const pessoa_par = pessoa_id.toString;
+  try {
+    const consulta = `SELECT id, nome FROM entidades WHERE pessoa_id IN (${pessoa_id}) AND ativo = 'A' `;
+    const response = await db.query(consulta);
 
-  if (response.rows.length == 0) {
-    return res.status(400).send(`Nao foi encontrado nenhum registro para categoria ${pessoa_id}!`);
-  }
-  
-  return res.status(200).send(response.rows);
+    if (response.rows.length == 0) {
+      return res.status(400).send(`Nao foi encontrado nenhum registro para categoria ${pessoa_id}!`);
+    }
+    
+    return res.status(200).send(response.rows);
 
+  } catch(err) {
+    const erro = res.status(409).send({ message: 'Erro ocorrido na consulta: ' + err.message });
+    return erro;
+  }  
 };
 
