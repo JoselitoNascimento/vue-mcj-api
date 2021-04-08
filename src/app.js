@@ -35,7 +35,6 @@ const parceiros = require('./routes/entidade-parceiros.routes');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ type: 'application/vnd.api+json' }));
-
 // Load routes
 app.use(index);
 app.use('/', userRoute);
