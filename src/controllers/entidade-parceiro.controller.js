@@ -10,7 +10,7 @@ exports.listParceirosEntidade = async (req, res) => {
                                   '       EXP.parceiro_id, PAR.nome AS parceiro            ' +
                                   'FROM entidades_parceiros EXP                            ' +
                                   'INNER JOIN entidades ENT ON (ENT.id = EXP.entidade_id)  ' +
-                                  'INNER JOIN entidades PAR ON (PAR.id = EXP.entidade_id)  ' +
+                                  'INNER JOIN entidades PAR ON (PAR.id = EXP.parceiro_id)  ' +
                                   'WHERE entidade_id  = $1                                 ' ,
       [entidade_id]
   );

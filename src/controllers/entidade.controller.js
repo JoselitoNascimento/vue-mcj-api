@@ -36,7 +36,7 @@ exports.createEntidade = async (req, res) => {
     }  
     // Dados da OAB apenas para advogados   
     const { oabs } = req.body;
-    if (oabs) {
+    if (oabs.length > 0) {
       for (let index = 0; index < oabs.length; index++) {
         const { numero_oab, uf_oab } = oabs[index];
         await db.query(
@@ -47,7 +47,7 @@ exports.createEntidade = async (req, res) => {
     }
     // Dados do estagiário apenas para advogados 
     const { estagiarios } = req.body;
-    if (estagiarios) {
+    if (estagiarios.length > 0) {
       for (let index = 0; index < estagiarios.length; index++) {
         const { estagiario_id, dt_inicio, dt_final } = estagiarios[index];
         await db.query(
@@ -58,7 +58,7 @@ exports.createEntidade = async (req, res) => {
     }
     // Dados do email é para todos   
     const { emails } = req.body;
-    if (emails) {
+    if (emails.length > 0) {
       for (let index = 0; index < emails.length; index++) {
         const { conta, email } = emails[index];
         await db.query(
@@ -69,12 +69,13 @@ exports.createEntidade = async (req, res) => {
     }
     // Dados de parceiros apenas para parceiros
     const { parceiros } = req.body;
-    if (parceiros) {
-      for (let index = 0; index < emails.length; index++) {
+    console.log(JSON.stringify(parceiros))
+    if (parceiros.length > 0) {
+      for (let index = 0; index < parceiros.length; index++) {
         const { parceiro_id } = parceiros[index];
         await db.query(
           "INSERT INTO entidades_parceiros (entidade_id, parceiro_id) VALUES ($1, $2)",
-          [id, parceiro_id]
+          [newID, parceiro_id]
         );
       }  
     }
@@ -86,7 +87,7 @@ exports.createEntidade = async (req, res) => {
       body: { pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, insc_est, ativo, dt_inc, us_inc },
     });
   } catch(err) {
-    const erro = res.status(409).send({ message: "Erro ocorrido ao inserir entidade: " + err.detail });
+    const erro = res.status(409).send({ message: "Erro ocorrido ao inserir entidade: " + err });
     await db.query('ROLLBACK');
     return erro;
   }  
@@ -186,7 +187,7 @@ exports.updateEntidade = async (req, res) => {
         "DELETE FROM entidades_parceiros WHERE entidade_id = $1",
         [id]
       );
-      for (let index = 0; index < emails.length; index++) {
+      for (let index = 0; index < parceiros.length; index++) {
         const { parceiro_id } = parceiros[index];
         await db.query(
           "INSERT INTO entidades_parceiros (entidade_id, parceiro_id) VALUES ($1, $2)",
