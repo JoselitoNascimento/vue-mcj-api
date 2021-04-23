@@ -32,7 +32,7 @@ router.post('/leads', [
   check('cep').isLength({ min: 8 }).withMessage('conteúdo com tamanho inválido!'),
   check('telefone').isLength({ min: 8 }).withMessage('conteúdo com tamanho inválido!'),
   check('email').isLength({ min: 8 }).withMessage('conteúdo com tamanho inválido!'),
-  check('ativo').isIn(['A', 'I']).withMessage('conteúdo do campo inválido!'),
+  check('ativo').isIn(['S', 'N']).withMessage('conteúdo do campo inválido!'),
 ], lead.createLead);
 
 // ==> Rota responsável por alterar um 'Grupo empresarial': (PUT): localhost:3000/grupos-empresariais
@@ -53,7 +53,7 @@ router.put('/leads', [
   check('cep').isLength({ min: 8 }).withMessage('conteúdo com tamanho inválido!'),
   check('telefone').isLength({ min: 8 }).withMessage('conteúdo com tamanho inválido!'),
   check('email').isLength({ min: 8 }).withMessage('conteúdo com tamanho inválido!'),
-  check('ativo').isIn(['A', 'I']).withMessage("conteúdo do campo inválido!"),
+  check('ativo').isIn(['S', 'N']).withMessage("conteúdo do campo inválido!"),
 ], lead.updateLead);
 
 // ==> Rota responsável por excluir um 'Grupo empresarial': (DELETE): localhost:3000/grupos-empresariais

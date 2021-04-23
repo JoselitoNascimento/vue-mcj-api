@@ -5,7 +5,7 @@
 -- Dumped from database version 10.12
 -- Dumped by pg_dump version 10.1
 
--- Started on 2021-04-16 12:01:58
+-- Started on 2021-04-20 17:00:47
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -25,7 +25,7 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 3047 (class 0 OID 0)
+-- TOC entry 3074 (class 0 OID 0)
 -- Dependencies: 2
 -- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
@@ -42,7 +42,7 @@ CREATE EXTENSION IF NOT EXISTS adminpack WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 3048 (class 0 OID 0)
+-- TOC entry 3075 (class 0 OID 0)
 -- Dependencies: 1
 -- Name: EXTENSION adminpack; Type: COMMENT; Schema: -; Owner: 
 --
@@ -126,7 +126,7 @@ CREATE SEQUENCE crm_comentarios_visitas_id_seq
 ALTER TABLE crm_comentarios_visitas_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3049 (class 0 OID 0)
+-- TOC entry 3076 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: crm_comentarios_visitas_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -191,7 +191,7 @@ CREATE SEQUENCE crm_leads_id_seq
 ALTER TABLE crm_leads_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3050 (class 0 OID 0)
+-- TOC entry 3077 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: crm_leads_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -235,7 +235,7 @@ CREATE SEQUENCE crm_servicos_visitas_id_seq
 ALTER TABLE crm_servicos_visitas_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3051 (class 0 OID 0)
+-- TOC entry 3078 (class 0 OID 0)
 -- Dependencies: 228
 -- Name: crm_servicos_visitas_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -371,7 +371,7 @@ ALTER TABLE ONLY entidades_estagiario ALTER COLUMN estagiario_id SET STATISTICS 
 ALTER TABLE entidades_estagiario OWNER TO postgres;
 
 --
--- TOC entry 3052 (class 0 OID 0)
+-- TOC entry 3079 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN entidades_estagiario.entidade_id; Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -380,7 +380,7 @@ COMMENT ON COLUMN entidades_estagiario.entidade_id IS 'ID entidade responsavel p
 
 
 --
--- TOC entry 3053 (class 0 OID 0)
+-- TOC entry 3080 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: COLUMN entidades_estagiario.estagiario_id; Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -405,7 +405,7 @@ CREATE SEQUENCE entidades_id_seq
 ALTER TABLE entidades_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3054 (class 0 OID 0)
+-- TOC entry 3081 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: entidades_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -451,6 +451,118 @@ ALTER TABLE ONLY entidades_parceiros ALTER COLUMN entidade_id SET STATISTICS 0;
 ALTER TABLE entidades_parceiros OWNER TO postgres;
 
 --
+-- TOC entry 232 (class 1259 OID 25407)
+-- Name: escritorio_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE escritorio_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 999999
+    CACHE 1;
+
+
+ALTER TABLE escritorio_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 231 (class 1259 OID 25378)
+-- Name: escritorios; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE escritorios (
+    id integer NOT NULL,
+    nome character varying(100) NOT NULL,
+    fantasia character varying(100),
+    logradouro character varying(100) NOT NULL,
+    cnpj character varying(14),
+    inscricao_municipal character varying(20),
+    numero_nfe integer DEFAULT 0 NOT NULL,
+    cnae character varying(10) NOT NULL,
+    numero character varying(10) NOT NULL,
+    bairro character varying(60) NOT NULL,
+    cidade_ibge integer NOT NULL,
+    uf character(2) NOT NULL,
+    cep character(8) NOT NULL,
+    fonefixo character varying(30),
+    fonecel character varying(30),
+    email character varying(100),
+    perc_pis numeric(6,2) DEFAULT 0.0,
+    perc_cofins numeric(6,2) DEFAULT 0.0,
+    perc_irpj numeric(6,2) DEFAULT 0.0,
+    perc_csll numeric(6,2) DEFAULT 0.0,
+    perc_iss numeric(6,2) DEFAULT 0.0,
+    perc_custo numeric(6,2) DEFAULT 0.0,
+    perc_finan numeric(6,2) DEFAULT 0.0,
+    perc_inss numeric(6,2) DEFAULT 0.0,
+    regime_tributario numeric(1,0),
+    valor_limite_tributacao numeric(8,2) DEFAULT 0,
+    regime_tributacao_especial integer,
+    retem_iss character(1),
+    contador_id integer,
+    responsavel_id integer,
+    prefeitura character varying(100),
+    proxy_host character varying(50),
+    proxy_port integer,
+    proxy_user character varying(50),
+    proxy_pass character varying(150),
+    escritorio_host character varying(50),
+    escritorio_port integer,
+    escritorio_user character varying(50),
+    escritorio_pass character varying(150),
+    escritorio_email character varying(100),
+    escritorio_tls bit(1),
+    escritorio_ssl bit(1),
+    ssltype integer,
+    ssllib integer,
+    cryptlib integer,
+    httplib integer,
+    xmlsignlib integer,
+    arq_logo_nfe_emissor character varying(250),
+    arq_logo_nfe_municipio character varying(250),
+    certificado_numero character varying(100),
+    certificado_senha character varying(200),
+    certificado_path character varying(200),
+    orientacao_danfe character(1),
+    ambiente_nfe character(1),
+    versao_emissor_nfe character varying(8),
+    observacao_nfe text,
+    ativo character(1) DEFAULT 'S'::bpchar,
+    dt_inc date DEFAULT now(),
+    dt_alt date,
+    us_inc integer,
+    us_alt integer
+);
+
+
+ALTER TABLE escritorios OWNER TO postgres;
+
+--
+-- TOC entry 230 (class 1259 OID 25376)
+-- Name: escritorios_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE escritorios_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE escritorios_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3082 (class 0 OID 0)
+-- Dependencies: 230
+-- Name: escritorios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE escritorios_id_seq OWNED BY escritorios.id;
+
+
+--
 -- TOC entry 210 (class 1259 OID 25130)
 -- Name: etapasprocessuais; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -485,7 +597,7 @@ CREATE SEQUENCE etapasprocessuais_id_seq
 ALTER TABLE etapasprocessuais_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3055 (class 0 OID 0)
+-- TOC entry 3083 (class 0 OID 0)
 -- Dependencies: 209
 -- Name: etapasprocessuais_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -561,7 +673,7 @@ CREATE SEQUENCE localizacao_id_seq
 ALTER TABLE localizacao_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3056 (class 0 OID 0)
+-- TOC entry 3084 (class 0 OID 0)
 -- Dependencies: 203
 -- Name: localizacao_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -637,7 +749,7 @@ CREATE SEQUENCE pessoas_id_seq
 ALTER TABLE pessoas_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3057 (class 0 OID 0)
+-- TOC entry 3085 (class 0 OID 0)
 -- Dependencies: 213
 -- Name: pessoas_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -729,7 +841,7 @@ CREATE SEQUENCE tiposdeocorrencia_id_seq
 ALTER TABLE tiposdeocorrencia_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3058 (class 0 OID 0)
+-- TOC entry 3086 (class 0 OID 0)
 -- Dependencies: 211
 -- Name: tiposdeocorrencia_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -760,7 +872,7 @@ CREATE TABLE usuarios (
 ALTER TABLE usuarios OWNER TO postgres;
 
 --
--- TOC entry 2820 (class 2604 OID 25309)
+-- TOC entry 2829 (class 2604 OID 25309)
 -- Name: crm_comentarios_visitas id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -768,7 +880,7 @@ ALTER TABLE ONLY crm_comentarios_visitas ALTER COLUMN id SET DEFAULT nextval('cr
 
 
 --
--- TOC entry 2815 (class 2604 OID 25293)
+-- TOC entry 2824 (class 2604 OID 25293)
 -- Name: crm_leads id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -776,7 +888,7 @@ ALTER TABLE ONLY crm_leads ALTER COLUMN id SET DEFAULT nextval('crm_leads_id_seq
 
 
 --
--- TOC entry 2822 (class 2604 OID 25320)
+-- TOC entry 2831 (class 2604 OID 25320)
 -- Name: crm_servicos_visitas id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -784,7 +896,7 @@ ALTER TABLE ONLY crm_servicos_visitas ALTER COLUMN id SET DEFAULT nextval('crm_s
 
 
 --
--- TOC entry 2801 (class 2604 OID 25159)
+-- TOC entry 2810 (class 2604 OID 25159)
 -- Name: entidades id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -792,7 +904,15 @@ ALTER TABLE ONLY entidades ALTER COLUMN id SET DEFAULT nextval('entidades_id_seq
 
 
 --
--- TOC entry 2792 (class 2604 OID 25133)
+-- TOC entry 2833 (class 2604 OID 25381)
+-- Name: escritorios id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY escritorios ALTER COLUMN id SET DEFAULT nextval('escritorios_id_seq'::regclass);
+
+
+--
+-- TOC entry 2801 (class 2604 OID 25133)
 -- Name: etapasprocessuais id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -800,7 +920,7 @@ ALTER TABLE ONLY etapasprocessuais ALTER COLUMN id SET DEFAULT nextval('etapaspr
 
 
 --
--- TOC entry 2783 (class 2604 OID 25099)
+-- TOC entry 2792 (class 2604 OID 25099)
 -- Name: localizacoes id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -808,7 +928,7 @@ ALTER TABLE ONLY localizacoes ALTER COLUMN id SET DEFAULT nextval('localizacao_i
 
 
 --
--- TOC entry 2795 (class 2604 OID 25142)
+-- TOC entry 2804 (class 2604 OID 25142)
 -- Name: tiposdeocorrencia id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -816,7 +936,7 @@ ALTER TABLE ONLY tiposdeocorrencia ALTER COLUMN id SET DEFAULT nextval('tiposdeo
 
 
 --
--- TOC entry 2798 (class 2604 OID 25151)
+-- TOC entry 2807 (class 2604 OID 25151)
 -- Name: tiposdepessoa id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -824,7 +944,7 @@ ALTER TABLE ONLY tiposdepessoa ALTER COLUMN id SET DEFAULT nextval('pessoas_id_s
 
 
 --
--- TOC entry 3012 (class 0 OID 25084)
+-- TOC entry 3036 (class 0 OID 25084)
 -- Dependencies: 201
 -- Data for Name: acoes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -847,7 +967,7 @@ COPY acoes (id, descricao, ativo, dt_inc, dt_alt, us_inc, us_alt) FROM stdin;
 
 
 --
--- TOC entry 3038 (class 0 OID 25306)
+-- TOC entry 3062 (class 0 OID 25306)
 -- Dependencies: 227
 -- Data for Name: crm_comentarios_visitas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -857,7 +977,7 @@ COPY crm_comentarios_visitas (id, visitas_id, dt_comentario, comentario, situaca
 
 
 --
--- TOC entry 3035 (class 0 OID 25290)
+-- TOC entry 3059 (class 0 OID 25290)
 -- Dependencies: 224
 -- Data for Name: crm_leads; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -868,7 +988,7 @@ COPY crm_leads (id, dt_cadastro, escritorio_id, entidade_id, grupo_empresarial_i
 
 
 --
--- TOC entry 3040 (class 0 OID 25317)
+-- TOC entry 3064 (class 0 OID 25317)
 -- Dependencies: 229
 -- Data for Name: crm_servicos_visitas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -878,7 +998,7 @@ COPY crm_servicos_visitas (id, visita_id, servico_id, situacao, dt_inc, us_inc, 
 
 
 --
--- TOC entry 3036 (class 0 OID 25299)
+-- TOC entry 3060 (class 0 OID 25299)
 -- Dependencies: 225
 -- Data for Name: crm_visitas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -888,7 +1008,7 @@ COPY crm_visitas (id, lead_id, dt_visita, entidade_id, situacao, dt_inc, us_inc,
 
 
 --
--- TOC entry 3027 (class 0 OID 25156)
+-- TOC entry 3051 (class 0 OID 25156)
 -- Dependencies: 216
 -- Data for Name: entidades; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -907,7 +1027,7 @@ COPY entidades (id, pessoa_id, pessoa_tipo, nome, fantasia, cnpj_cpf, insc_mun, 
 
 
 --
--- TOC entry 3028 (class 0 OID 25178)
+-- TOC entry 3052 (class 0 OID 25178)
 -- Dependencies: 217
 -- Data for Name: entidades_dados_complementares; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -919,7 +1039,7 @@ COPY entidades_dados_complementares (entidade_id, nome_contato, porte_id, cnae_p
 
 
 --
--- TOC entry 3031 (class 0 OID 25240)
+-- TOC entry 3055 (class 0 OID 25240)
 -- Dependencies: 220
 -- Data for Name: entidades_email; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -937,7 +1057,7 @@ COPY entidades_email (entidade_id, conta, email, ativo, dt_inc, us_inc, dt_alt, 
 
 
 --
--- TOC entry 3032 (class 0 OID 25250)
+-- TOC entry 3056 (class 0 OID 25250)
 -- Dependencies: 221
 -- Data for Name: entidades_enderecos; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -956,7 +1076,7 @@ COPY entidades_enderecos (entidade_id, cep, logradouro, numero, bairro, cidade_i
 
 
 --
--- TOC entry 3029 (class 0 OID 25213)
+-- TOC entry 3053 (class 0 OID 25213)
 -- Dependencies: 218
 -- Data for Name: entidades_estagiario; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -968,7 +1088,7 @@ COPY entidades_estagiario (entidade_id, estagiario_id, dt_inicio, dt_final, dt_i
 
 
 --
--- TOC entry 3030 (class 0 OID 25229)
+-- TOC entry 3054 (class 0 OID 25229)
 -- Dependencies: 219
 -- Data for Name: entidades_oab; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -980,7 +1100,7 @@ COPY entidades_oab (entidade_id, numero_oab, uf_oab, ativo, dt_inc, us_inc, dt_a
 
 
 --
--- TOC entry 3033 (class 0 OID 25264)
+-- TOC entry 3057 (class 0 OID 25264)
 -- Dependencies: 222
 -- Data for Name: entidades_parceiros; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -992,7 +1112,18 @@ COPY entidades_parceiros (entidade_id, parceiro_id) FROM stdin;
 
 
 --
--- TOC entry 3021 (class 0 OID 25130)
+-- TOC entry 3066 (class 0 OID 25378)
+-- Dependencies: 231
+-- Data for Name: escritorios; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY escritorios (id, nome, fantasia, logradouro, cnpj, inscricao_municipal, numero_nfe, cnae, numero, bairro, cidade_ibge, uf, cep, fonefixo, fonecel, email, perc_pis, perc_cofins, perc_irpj, perc_csll, perc_iss, perc_custo, perc_finan, perc_inss, regime_tributario, valor_limite_tributacao, regime_tributacao_especial, retem_iss, contador_id, responsavel_id, prefeitura, proxy_host, proxy_port, proxy_user, proxy_pass, escritorio_host, escritorio_port, escritorio_user, escritorio_pass, escritorio_email, escritorio_tls, escritorio_ssl, ssltype, ssllib, cryptlib, httplib, xmlsignlib, arq_logo_nfe_emissor, arq_logo_nfe_municipio, certificado_numero, certificado_senha, certificado_path, orientacao_danfe, ambiente_nfe, versao_emissor_nfe, observacao_nfe, ativo, dt_inc, dt_alt, us_inc, us_alt) FROM stdin;
+1	MANUEL CAVALCANTE JÚNIOR - SOCIEDADE DE ADVOGADOS	MCJ (PE)	AV. RUI BARBOSA - SALA 1205/1206	08471721000191	3750698	15	6911701	715	GRAÇAS	2611606	PE	52011902	8132158750	\N	naoresponda@mcadv.com.br	0.65	3.00	1.50	1.00	5.00	0.00	16.33	0.00	1	0.00	0	N	1	1	Prefeitura da Cidade do Recife	\N	\N	\N	\N	email-ssl.com.br	465	naoresponda@mcadv.com.br	053056055050064100102086	naoresponda@mcadv.com.br	1	1	0	0	0	0	0	E:\\Baoba\\Imagens\\Logo-NFSe-Recife.jpg	E:\\Baoba\\Imagens\\2611606.jpg	6DEC06A708C7968D	065117100105049054048049077067065068086	\N	R	2	1.00	EMPRESA OPTANTE PELO REGIME DE TRIBUTAÇÃO COM BASE NO SIMPLES NACIONAL	S	2017-09-05	\N	1	\N
+\.
+
+
+--
+-- TOC entry 3045 (class 0 OID 25130)
 -- Dependencies: 210
 -- Data for Name: etapasprocessuais; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1004,7 +1135,7 @@ COPY etapasprocessuais (id, descricao, dt_inc, dt_alt, us_inc, us_alt, ativo) FR
 
 
 --
--- TOC entry 3010 (class 0 OID 25073)
+-- TOC entry 3034 (class 0 OID 25073)
 -- Dependencies: 199
 -- Data for Name: gruposempresariais; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1023,7 +1154,7 @@ COPY gruposempresariais (id, descricao, ativo, dt_inc, dt_alt, us_inc, us_alt) F
 
 
 --
--- TOC entry 3015 (class 0 OID 25096)
+-- TOC entry 3039 (class 0 OID 25096)
 -- Dependencies: 204
 -- Data for Name: localizacoes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1040,7 +1171,7 @@ COPY localizacoes (id, descricao, ativo, dt_inc, dt_alt, us_inc, us_alt) FROM st
 
 
 --
--- TOC entry 3018 (class 0 OID 25117)
+-- TOC entry 3042 (class 0 OID 25117)
 -- Dependencies: 207
 -- Data for Name: orgaoscompetentes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1069,7 +1200,7 @@ COPY orgaoscompetentes (id, descricao, dt_inc, dt_alt, us_inc, us_alt, ativo) FR
 
 
 --
--- TOC entry 3016 (class 0 OID 25104)
+-- TOC entry 3040 (class 0 OID 25104)
 -- Dependencies: 205
 -- Data for Name: servicos; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1085,7 +1216,7 @@ COPY servicos (id, descricao, dt_inc, dt_alt, us_inc, us_alt, ativo) FROM stdin;
 
 
 --
--- TOC entry 3023 (class 0 OID 25139)
+-- TOC entry 3047 (class 0 OID 25139)
 -- Dependencies: 212
 -- Data for Name: tiposdeocorrencia; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1101,7 +1232,7 @@ COPY tiposdeocorrencia (id, descricao, dt_inc, dt_alt, us_inc, us_alt, ativo, ti
 
 
 --
--- TOC entry 3025 (class 0 OID 25148)
+-- TOC entry 3049 (class 0 OID 25148)
 -- Dependencies: 214
 -- Data for Name: tiposdepessoa; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1121,7 +1252,7 @@ COPY tiposdepessoa (id, descricao, dt_inc, dt_alt, us_inc, us_alt, ativo) FROM s
 
 
 --
--- TOC entry 3008 (class 0 OID 25056)
+-- TOC entry 3032 (class 0 OID 25056)
 -- Dependencies: 197
 -- Data for Name: usuarios; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1132,7 +1263,7 @@ COPY usuarios (id, user_name, email, password, perfil_id, ativo, dt_inc, dt_alt,
 
 
 --
--- TOC entry 3059 (class 0 OID 0)
+-- TOC entry 3087 (class 0 OID 0)
 -- Dependencies: 202
 -- Name: acoes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1141,7 +1272,7 @@ SELECT pg_catalog.setval('acoes_id_seq', 23, true);
 
 
 --
--- TOC entry 3060 (class 0 OID 0)
+-- TOC entry 3088 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: crm_comentarios_visitas_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1150,7 +1281,7 @@ SELECT pg_catalog.setval('crm_comentarios_visitas_id_seq', 1, false);
 
 
 --
--- TOC entry 3061 (class 0 OID 0)
+-- TOC entry 3089 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: crm_leads_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1159,7 +1290,7 @@ SELECT pg_catalog.setval('crm_leads_id_seq', 3, true);
 
 
 --
--- TOC entry 3062 (class 0 OID 0)
+-- TOC entry 3090 (class 0 OID 0)
 -- Dependencies: 228
 -- Name: crm_servicos_visitas_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1168,7 +1299,7 @@ SELECT pg_catalog.setval('crm_servicos_visitas_id_seq', 1, false);
 
 
 --
--- TOC entry 3063 (class 0 OID 0)
+-- TOC entry 3091 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: entidades_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1177,7 +1308,25 @@ SELECT pg_catalog.setval('entidades_id_seq', 208, true);
 
 
 --
--- TOC entry 3064 (class 0 OID 0)
+-- TOC entry 3092 (class 0 OID 0)
+-- Dependencies: 232
+-- Name: escritorio_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('escritorio_id_seq', 1, false);
+
+
+--
+-- TOC entry 3093 (class 0 OID 0)
+-- Dependencies: 230
+-- Name: escritorios_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('escritorios_id_seq', 1, false);
+
+
+--
+-- TOC entry 3094 (class 0 OID 0)
 -- Dependencies: 209
 -- Name: etapasprocessuais_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1186,7 +1335,7 @@ SELECT pg_catalog.setval('etapasprocessuais_id_seq', 3, true);
 
 
 --
--- TOC entry 3065 (class 0 OID 0)
+-- TOC entry 3095 (class 0 OID 0)
 -- Dependencies: 200
 -- Name: grupoempresarial_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1195,7 +1344,7 @@ SELECT pg_catalog.setval('grupoempresarial_id_seq', 42, true);
 
 
 --
--- TOC entry 3066 (class 0 OID 0)
+-- TOC entry 3096 (class 0 OID 0)
 -- Dependencies: 203
 -- Name: localizacao_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1204,7 +1353,7 @@ SELECT pg_catalog.setval('localizacao_id_seq', 10, true);
 
 
 --
--- TOC entry 3067 (class 0 OID 0)
+-- TOC entry 3097 (class 0 OID 0)
 -- Dependencies: 208
 -- Name: orgaoscompetentes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1213,7 +1362,7 @@ SELECT pg_catalog.setval('orgaoscompetentes_id_seq', 23, false);
 
 
 --
--- TOC entry 3068 (class 0 OID 0)
+-- TOC entry 3098 (class 0 OID 0)
 -- Dependencies: 213
 -- Name: pessoas_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1222,7 +1371,7 @@ SELECT pg_catalog.setval('pessoas_id_seq', 1, false);
 
 
 --
--- TOC entry 3069 (class 0 OID 0)
+-- TOC entry 3099 (class 0 OID 0)
 -- Dependencies: 206
 -- Name: servicos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1231,7 +1380,7 @@ SELECT pg_catalog.setval('servicos_id_seq', 7, true);
 
 
 --
--- TOC entry 3070 (class 0 OID 0)
+-- TOC entry 3100 (class 0 OID 0)
 -- Dependencies: 198
 -- Name: tbusuarios_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1240,7 +1389,7 @@ SELECT pg_catalog.setval('tbusuarios_id_seq', 3, true);
 
 
 --
--- TOC entry 3071 (class 0 OID 0)
+-- TOC entry 3101 (class 0 OID 0)
 -- Dependencies: 211
 -- Name: tiposdeocorrencia_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1249,7 +1398,7 @@ SELECT pg_catalog.setval('tiposdeocorrencia_id_seq', 6, true);
 
 
 --
--- TOC entry 2836 (class 2606 OID 25091)
+-- TOC entry 2858 (class 2606 OID 25091)
 -- Name: acoes acoes_descricao_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1258,7 +1407,7 @@ ALTER TABLE ONLY acoes
 
 
 --
--- TOC entry 2838 (class 2606 OID 25089)
+-- TOC entry 2860 (class 2606 OID 25089)
 -- Name: acoes acoes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1267,7 +1416,7 @@ ALTER TABLE ONLY acoes
 
 
 --
--- TOC entry 2872 (class 2606 OID 25314)
+-- TOC entry 2894 (class 2606 OID 25314)
 -- Name: crm_comentarios_visitas comentarios_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1276,7 +1425,7 @@ ALTER TABLE ONLY crm_comentarios_visitas
 
 
 --
--- TOC entry 2874 (class 2606 OID 25322)
+-- TOC entry 2896 (class 2606 OID 25322)
 -- Name: crm_servicos_visitas crm_servicos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1285,7 +1434,7 @@ ALTER TABLE ONLY crm_servicos_visitas
 
 
 --
--- TOC entry 2860 (class 2606 OID 25218)
+-- TOC entry 2882 (class 2606 OID 25218)
 -- Name: entidades_estagiario entidade_estagiario_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1294,7 +1443,7 @@ ALTER TABLE ONLY entidades_estagiario
 
 
 --
--- TOC entry 2858 (class 2606 OID 25182)
+-- TOC entry 2880 (class 2606 OID 25182)
 -- Name: entidades_dados_complementares entidades_dados_complementares_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1303,7 +1452,7 @@ ALTER TABLE ONLY entidades_dados_complementares
 
 
 --
--- TOC entry 2864 (class 2606 OID 25244)
+-- TOC entry 2886 (class 2606 OID 25244)
 -- Name: entidades_email entidades_email_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1312,7 +1461,7 @@ ALTER TABLE ONLY entidades_email
 
 
 --
--- TOC entry 2862 (class 2606 OID 25234)
+-- TOC entry 2884 (class 2606 OID 25234)
 -- Name: entidades_oab entidades_oab_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1321,7 +1470,7 @@ ALTER TABLE ONLY entidades_oab
 
 
 --
--- TOC entry 2856 (class 2606 OID 25165)
+-- TOC entry 2878 (class 2606 OID 25165)
 -- Name: entidades entidades_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1330,7 +1479,16 @@ ALTER TABLE ONLY entidades
 
 
 --
--- TOC entry 2849 (class 2606 OID 25136)
+-- TOC entry 2898 (class 2606 OID 25396)
+-- Name: escritorios escritorios_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY escritorios
+    ADD CONSTRAINT escritorios_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2871 (class 2606 OID 25136)
 -- Name: etapasprocessuais etapasprocessuais_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1339,7 +1497,7 @@ ALTER TABLE ONLY etapasprocessuais
 
 
 --
--- TOC entry 2832 (class 2606 OID 25081)
+-- TOC entry 2854 (class 2606 OID 25081)
 -- Name: gruposempresariais grupoempresarial_descricao_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1348,7 +1506,7 @@ ALTER TABLE ONLY gruposempresariais
 
 
 --
--- TOC entry 2834 (class 2606 OID 25079)
+-- TOC entry 2856 (class 2606 OID 25079)
 -- Name: gruposempresariais grupoempresarial_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1357,7 +1515,7 @@ ALTER TABLE ONLY gruposempresariais
 
 
 --
--- TOC entry 2868 (class 2606 OID 25298)
+-- TOC entry 2890 (class 2606 OID 25298)
 -- Name: crm_leads leads_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1366,7 +1524,7 @@ ALTER TABLE ONLY crm_leads
 
 
 --
--- TOC entry 2840 (class 2606 OID 25103)
+-- TOC entry 2862 (class 2606 OID 25103)
 -- Name: localizacoes localizacao_descricao_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1375,7 +1533,7 @@ ALTER TABLE ONLY localizacoes
 
 
 --
--- TOC entry 2842 (class 2606 OID 25101)
+-- TOC entry 2864 (class 2606 OID 25101)
 -- Name: localizacoes localizacao_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1384,7 +1542,7 @@ ALTER TABLE ONLY localizacoes
 
 
 --
--- TOC entry 2847 (class 2606 OID 25122)
+-- TOC entry 2869 (class 2606 OID 25122)
 -- Name: orgaoscompetentes orgaoscompetentes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1393,7 +1551,7 @@ ALTER TABLE ONLY orgaoscompetentes
 
 
 --
--- TOC entry 2866 (class 2606 OID 25268)
+-- TOC entry 2888 (class 2606 OID 25268)
 -- Name: entidades_parceiros parceiros_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1402,7 +1560,7 @@ ALTER TABLE ONLY entidades_parceiros
 
 
 --
--- TOC entry 2844 (class 2606 OID 25115)
+-- TOC entry 2866 (class 2606 OID 25115)
 -- Name: servicos servicos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1411,7 +1569,7 @@ ALTER TABLE ONLY servicos
 
 
 --
--- TOC entry 2853 (class 2606 OID 25153)
+-- TOC entry 2875 (class 2606 OID 25153)
 -- Name: tiposdepessoa tbpessoa_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1420,7 +1578,7 @@ ALTER TABLE ONLY tiposdepessoa
 
 
 --
--- TOC entry 2825 (class 2606 OID 25067)
+-- TOC entry 2847 (class 2606 OID 25067)
 -- Name: usuarios tbusuarios_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1429,7 +1587,7 @@ ALTER TABLE ONLY usuarios
 
 
 --
--- TOC entry 2827 (class 2606 OID 25071)
+-- TOC entry 2849 (class 2606 OID 25071)
 -- Name: usuarios tbusuarios_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1438,7 +1596,7 @@ ALTER TABLE ONLY usuarios
 
 
 --
--- TOC entry 2830 (class 2606 OID 25065)
+-- TOC entry 2852 (class 2606 OID 25065)
 -- Name: usuarios tbusuarios_user_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1447,7 +1605,7 @@ ALTER TABLE ONLY usuarios
 
 
 --
--- TOC entry 2851 (class 2606 OID 25145)
+-- TOC entry 2873 (class 2606 OID 25145)
 -- Name: tiposdeocorrencia tiposdeocorrencia_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1456,7 +1614,7 @@ ALTER TABLE ONLY tiposdeocorrencia
 
 
 --
--- TOC entry 2870 (class 2606 OID 25303)
+-- TOC entry 2892 (class 2606 OID 25303)
 -- Name: crm_visitas visitas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1465,7 +1623,7 @@ ALTER TABLE ONLY crm_visitas
 
 
 --
--- TOC entry 2854 (class 1259 OID 25172)
+-- TOC entry 2876 (class 1259 OID 25172)
 -- Name: entidades_cnpj_cpf_unique__idx; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -1473,7 +1631,7 @@ CREATE UNIQUE INDEX entidades_cnpj_cpf_unique__idx ON public.entidades USING btr
 
 
 --
--- TOC entry 2845 (class 1259 OID 25126)
+-- TOC entry 2867 (class 1259 OID 25126)
 -- Name: orgaoscompetentes_idx; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -1481,7 +1639,7 @@ CREATE UNIQUE INDEX orgaoscompetentes_idx ON public.orgaoscompetentes USING btre
 
 
 --
--- TOC entry 2828 (class 1259 OID 25062)
+-- TOC entry 2850 (class 1259 OID 25062)
 -- Name: tbusuarios_user_name_idx; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -1489,7 +1647,7 @@ CREATE INDEX tbusuarios_user_name_idx ON public.usuarios USING btree (user_name)
 
 
 --
--- TOC entry 2885 (class 2606 OID 25333)
+-- TOC entry 2909 (class 2606 OID 25333)
 -- Name: crm_leads crm_leads_entidades_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1498,7 +1656,7 @@ ALTER TABLE ONLY crm_leads
 
 
 --
--- TOC entry 2886 (class 2606 OID 25343)
+-- TOC entry 2910 (class 2606 OID 25343)
 -- Name: crm_leads crm_leads_grupos_empresariais_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1507,7 +1665,7 @@ ALTER TABLE ONLY crm_leads
 
 
 --
--- TOC entry 2878 (class 2606 OID 25219)
+-- TOC entry 2902 (class 2606 OID 25219)
 -- Name: entidades_estagiario entidade_estagiario_entidade_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1516,7 +1674,7 @@ ALTER TABLE ONLY entidades_estagiario
 
 
 --
--- TOC entry 2879 (class 2606 OID 25224)
+-- TOC entry 2903 (class 2606 OID 25224)
 -- Name: entidades_estagiario entidade_estagiario_estagiario_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1525,7 +1683,7 @@ ALTER TABLE ONLY entidades_estagiario
 
 
 --
--- TOC entry 2876 (class 2606 OID 25194)
+-- TOC entry 2900 (class 2606 OID 25194)
 -- Name: entidades_dados_complementares entidades_dados_complementares_entidade_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1534,7 +1692,7 @@ ALTER TABLE ONLY entidades_dados_complementares
 
 
 --
--- TOC entry 2877 (class 2606 OID 25199)
+-- TOC entry 2901 (class 2606 OID 25199)
 -- Name: entidades_dados_complementares entidades_dados_complementares_grupo_empresarial_fk1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1543,7 +1701,7 @@ ALTER TABLE ONLY entidades_dados_complementares
 
 
 --
--- TOC entry 2881 (class 2606 OID 25245)
+-- TOC entry 2905 (class 2606 OID 25245)
 -- Name: entidades_email entidades_email_entidade_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1552,7 +1710,7 @@ ALTER TABLE ONLY entidades_email
 
 
 --
--- TOC entry 2875 (class 2606 OID 25173)
+-- TOC entry 2899 (class 2606 OID 25173)
 -- Name: entidades entidades_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1561,7 +1719,7 @@ ALTER TABLE ONLY entidades
 
 
 --
--- TOC entry 2882 (class 2606 OID 25259)
+-- TOC entry 2906 (class 2606 OID 25259)
 -- Name: entidades_enderecos entidades_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1570,7 +1728,7 @@ ALTER TABLE ONLY entidades_enderecos
 
 
 --
--- TOC entry 2880 (class 2606 OID 25235)
+-- TOC entry 2904 (class 2606 OID 25235)
 -- Name: entidades_oab entidades_oab_entidade_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1579,7 +1737,7 @@ ALTER TABLE ONLY entidades_oab
 
 
 --
--- TOC entry 2883 (class 2606 OID 25269)
+-- TOC entry 2907 (class 2606 OID 25269)
 -- Name: entidades_parceiros parceiros_entidade_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1588,7 +1746,7 @@ ALTER TABLE ONLY entidades_parceiros
 
 
 --
--- TOC entry 2884 (class 2606 OID 25274)
+-- TOC entry 2908 (class 2606 OID 25274)
 -- Name: entidades_parceiros parceiros_parceiro_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1596,7 +1754,7 @@ ALTER TABLE ONLY entidades_parceiros
     ADD CONSTRAINT parceiros_parceiro_fk FOREIGN KEY (parceiro_id) REFERENCES entidades(id) ON DELETE CASCADE;
 
 
--- Completed on 2021-04-16 12:02:00
+-- Completed on 2021-04-20 17:00:50
 
 --
 -- PostgreSQL database dump complete
