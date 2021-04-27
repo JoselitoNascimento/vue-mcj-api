@@ -87,43 +87,52 @@ exports.deleteLeadById = async (req, res) => {
 
 // ==> Método responsável por listar todas as 'Entidades':
 exports.listAllLead = async (_, res) => {
-  const response = await db.query('SELECT CRM.id,                         ' +
-                                  '       CRM.dt_cadastro,                ' +
-                                  '       CRM.escritorio_id,              ' + 
-                                  '       ESC.nome as escritorio,         ' +
-                                  '       CRM.entidade_id,                ' + 
-                                  '       ENT.nome as responsavel,        ' +
-                                  '       CRM.grupo_empresarial_id,       ' + 
-                                  '       GRP.descricao as grupo_emp,     ' +
-                                  '       CRM.cnpj_cpf,                   ' + 
-                                  '       CRM.nome,                       ' + 
-                                  '       CRM.fantasia,                   ' +
-                                  '       contato,                        ' +
-                                  '       CRM.logradouro,                 ' +
-                                  '       CRM.numero,                     ' +
-                                  '       CRM.bairro,                     ' +
-                                  '       CRM.cidade_ibge,                ' +
-                                  '       CRM.uf,                         ' +
-                                  '       CRM.cep,                        ' +
-                                  '       CRM.telefone,                   ' +
-                                  '       CRM.email,                      ' +
-                                  '       CRM.cnae_principal,             ' +
-                                  '       CRM.comentario,                 ' +
-                                  '       CRM.pessoa_tipo,                ' +
-                                  '       CRM.complemento,                ' +
-                                  '       CRM.ativo,                      ' +
-                                  '       CRM.dt_inc,                     ' +
-                                  '       CRM.dt_alt,                     ' +
-                                  '       CRM.us_inc,                     ' +
-                                  '       CRM.us_alt                      ' +
-                                  'FROM crm_leads CRM                     ' + 
-                                  'INNER JOIN escritorios ESC             ' +
-                                  'ON (CRM.escritorio_id = ESC.id)        ' +
-                                  'INNER JOIN entidades ENT               ' +
-                                  'ON (CRM.entidade_id = ENT.id)          ' +
-                                  'INNER JOIN gruposempresariais GRP      ' +
-                                  'ON (CRM.grupo_empresarial_id = GRP.id) ' +
-                                  'ORDER BY CRM.nome ASC                  ');
+  const response = await db.query("SELECT CRM.id,                           " +
+                                  "       CASE CRM.situacao                 " +
+                                  "       WHEN 1 THEN 'QUALIFICADO'         " +
+                                  "       WHEN 2 THEN 'EM PROSPECÇÃO'       " +
+                                  "       WHEN 3 THEN 'AGUARDANDO PROPOSTA' " +           
+                                  "       WHEN 4 THEN 'PROPOSTA ENVIADA'    " +              
+                                  "       WHEN 5 THEN 'CONTRATO ASSINADO'   " +             
+                                  "       WHEN 6 THEN 'RETORNAR'            " +                        
+                                  "       ELSE 'SEM INTERESSE'              " +
+                                  "       END AS situacao,                  " +
+                                  "       CRM.dt_cadastro,                  " +
+                                  "       CRM.escritorio_id,                " + 
+                                  "       ESC.nome as escritorio,           " +
+                                  "       CRM.entidade_id,                  " + 
+                                  "       ENT.nome as responsavel,          " +
+                                  "       CRM.grupo_empresarial_id,         " + 
+                                  "       GRP.descricao as grupo_emp,       " +
+                                  "       CRM.cnpj_cpf,                     " + 
+                                  "       CRM.nome,                         " + 
+                                  "       CRM.fantasia,                     " +
+                                  "       contato,                          " +
+                                  "       CRM.logradouro,                   " +
+                                  "       CRM.numero,                       " +
+                                  "       CRM.bairro,                       " +
+                                  "       CRM.cidade_ibge,                  " +
+                                  "       CRM.uf,                           " +
+                                  "       CRM.cep,                          " +
+                                  "       CRM.telefone,                     " +
+                                  "       CRM.email,                        " +
+                                  "       CRM.cnae_principal,               " +
+                                  "       CRM.comentario,                   " +
+                                  "       CRM.pessoa_tipo,                  " +
+                                  "       CRM.complemento,                  " +
+                                  "       CRM.ativo,                        " +
+                                  "       CRM.dt_inc,                       " +
+                                  "       CRM.dt_alt,                       " +
+                                  "       CRM.us_inc,                       " +
+                                  "       CRM.us_alt                        " +
+                                  "FROM crm_leads CRM                       " + 
+                                  "INNER JOIN escritorios ESC               " +
+                                  "ON (CRM.escritorio_id = ESC.id)          " +
+                                  "INNER JOIN entidades ENT                 " +
+                                  "ON (CRM.entidade_id = ENT.id)            " +
+                                  "INNER JOIN gruposempresariais GRP        " +
+                                  "ON (CRM.grupo_empresarial_id = GRP.id)   " +
+                                  "ORDER BY CRM.nome ASC                    ");
   res.status(200).send(response.rows);
 };
 
