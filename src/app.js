@@ -33,6 +33,7 @@ const enderecos = require('./routes/entidade-enderecos.routes');
 const parceiros = require('./routes/entidade-parceiros.routes');
 const leads = require('./routes/lead.routes');
 const escritorios = require('./routes/escritorio.routes');
+const visitas = require('./routes/crm-visitas.routes');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -59,5 +60,6 @@ app.use('/', enderecos);
 app.use('/', parceiros);
 app.use('/', leads);
 app.use('/', escritorios);
+app.use('/', visitas);
 
 module.exports = app;
