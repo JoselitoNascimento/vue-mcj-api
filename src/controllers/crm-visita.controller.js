@@ -8,6 +8,9 @@ exports.createVisita = async (req, res) => {
     return res.status(400).send({ message: 'Erros ocorridos ao validar campo ' + errors[0].param + ': ' + errors[0].msg});
   }
   try {
+    
+    console.log(JSON.stringify(req.body));
+
     const { crm_lead_id, data, entidade_id, situacao, dt_inc, us_inc } = req.body;
     await db.query('BEGIN');
     const newVisita = await db.query(
@@ -15,14 +18,16 @@ exports.createVisita = async (req, res) => {
       [crm_lead_id, data, entidade_id, situacao, dt_inc, us_inc]
     );
     const newID = newVisita.rows[0].id;
+    console.log(newID);
     // Dados dos serviços
     const { servicos } = req.body;
     if (servicos) {
       for (let index = 0; index < servicos.length; index++) {
-        const { crm_historico_id, servico_id, situacao, dt_inc, us_inc } = servicos[index];
+        console.log(JSON.stringify(servicos));
+        const { servico_id } = servicos[index];
         await db.query(
-          "INSERT INTO crm_servicos (crm_historico_id, servico_id, situacao, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6)",
-          [newID, crm_historico_id, servico_id, situacao, dt_inc, us_inc]
+          "INSERT INTO crm_servicos (crm_historico_id, servico_id, situacao, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5)",
+          [newID, servico_id, situacao, dt_inc, us_inc]
         );
       }
     }  
@@ -30,10 +35,11 @@ exports.createVisita = async (req, res) => {
     const { posts } = req.body;
     if (posts.length > 0) {
       for (let index = 0; index < posts.length; index++) {
-        const { crm_historico_id, data, post, situacao, dt_inc, us_inc } = posts[index];
+        console.log(JSON.stringify(posts));
+        const { data, post } = posts[index];
         await db.query(
-          "INSERT INTO crm_posts (crm_historico_id, data, post, situacao, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-          [newID, crm_historico_id, data, post, situacao, dt_inc, us_inc]
+          "INSERT INTO crm_posts (crm_historico_id, data, post, situacao, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6)",
+          [newID, data, post, situacao, dt_inc, us_inc]
         );
       }  
     }
@@ -41,7 +47,7 @@ exports.createVisita = async (req, res) => {
 
     return res.status(201).send({
       message: "Histórico de visita adicionada com sucesso!",
-      body: { id, crm_lead_id, data, entidade_id, situacao, dt_inc, us_inc },
+      body: { id : newID, crm_lead_id, data, entidade_id, situacao, dt_inc, us_inc },
     });
   } catch(err) {
     const erro = res.status(409).send({ message: "Erro ocorrido ao inserir histórico de visita: " + err });
@@ -156,11 +162,11 @@ exports.listAllVisitas = async (_, res) => {
                                   "       FROM public.crm_historico HIST                             " +
                                   "       INNER JOIN crm_leads LEAD ON (LEAD.id = HIST.crm_lead_id)  " + 
                                   "       INNER JOIN entidades ENTI ON (ENTI.id = HIST.entidade_id)  " +
-                                  "ORDER BY nome ASC" );
-  if (response.rows > 1) {
-    res.status(200).send(response.rows);
+                                  "ORDER BY nome ASC                                                 " );
+  if (response.rows.length > 1) {
+    return res.status(200).send(response.rows);
   } else {
-    res.status(406).send({ message: "não existe histórico de visita"});
+    return res.status(406).send({ message: "não existe histórico de visita"});
   }
 };
 
@@ -193,14 +199,14 @@ exports.listVisita = async (req, res) => {
                                   "FROM public.crm_historico HIST                                    " +
                                   "INNER JOIN crm_leads LEAD ON (LEAD.id = HIST.crm_lead_id)         " + 
                                   "INNER JOIN entidades ENTI ON (ENTI.id = HIST.entidade_id)         " +
-                                  "WHERE HIST.id = $1  ", 
+                                  "WHERE HIST.id = $1                                                ", 
                                   [id]
   );
 
-  if (response.rows.length == 0) {
+  if (response.rows.length > 1) {
+    return res.status(200).send(response.rows);
+  } else {  
     return res.status(400).send('Histórico de visita não cadastrado!');
   }
-
-  return res.status(200).send(response.rows);
 
 };
