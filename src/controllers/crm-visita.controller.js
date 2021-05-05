@@ -140,30 +140,33 @@ exports.deleteVisitaById = async (req, res) => {
 
 // ==> Método responsável por listar todas as 'Entidades':
 exports.listAllVisitas = async (_, res) => {
-  const response = await db.query("SELECT HIST.id,                                                   " +
-                                  "       HIST.crm_lead_id,                                          " +
-                                  "       LEAD.nome,                                                 " +
-                                  "       HIST.data,                                                 " +
-                                  "       HIST.entidade_id,                                          " + 
-                                  "       ENTI.nome as responsavel,                                  " +
-                                  "       HIST.situacao,                                             " + 
-                                  "       CASE HIST.situacao                                         " +
-                                  "            WHEN 1 THEN 'QUALIFICADO'                             " +
-                                  "            WHEN 2 THEN 'EM PROSPECÇÃO'                           " +
-                                  "            WHEN 3 THEN 'AGUARDANDO PROPOSTA'                     " +
-                                  "            WHEN 4 THEN 'PROPOSTA ENVIADA'                        " +
-                                  "            WHEN 5 THEN 'CONTRATO ASSINADO'                       " +
-                                  "            WHEN 6 THEN 'RETORNAR'                                " +
-                                  "            WHEN 7 THEN 'SEM INTERESSE' END AS desc_situacao,     " +
-                                  "       HIST.dt_inc,                                               " + 
-                                  "       HIST.us_inc,                                               " +
-                                  "       HIST.dt_alt,                                               " +
-                                  "       HIST.us_alt                                                " + 
-                                  "       FROM public.crm_historico HIST                             " +
-                                  "       INNER JOIN crm_leads LEAD ON (LEAD.id = HIST.crm_lead_id)  " + 
-                                  "       INNER JOIN entidades ENTI ON (ENTI.id = HIST.entidade_id)  " +
-                                  "ORDER BY nome ASC                                                 " );
-  if (response.rows.length > 1) {
+  const response = await db.query("SELECT HIST.id,                                                      " +
+                                  "       HIST.crm_lead_id,                                             " +
+                                  "       LEAD.nome,                                                    " +
+                                  "       LEAD.escritorio_id,                                           " +
+                                  "       ESCR.nome AS escritorio,                                      " +
+                                  "       HIST.data,                                                    " +
+                                  "       HIST.entidade_id,                                             " + 
+                                  "       ENTI.nome as responsavel,                                     " +
+                                  "       HIST.situacao,                                                " + 
+                                  "       CASE HIST.situacao                                            " +
+                                  "            WHEN 1 THEN 'QUALIFICADO'                                " +
+                                  "            WHEN 2 THEN 'EM PROSPECÇÃO'                              " +
+                                  "            WHEN 3 THEN 'AGUARDANDO PROPOSTA'                        " +
+                                  "            WHEN 4 THEN 'PROPOSTA ENVIADA'                           " +
+                                  "            WHEN 5 THEN 'CONTRATO ASSINADO'                          " +
+                                  "            WHEN 6 THEN 'RETORNAR'                                   " +
+                                  "            WHEN 7 THEN 'SEM INTERESSE' END AS desc_situacao,        " +
+                                  "       HIST.dt_inc,                                                  " + 
+                                  "       HIST.us_inc,                                                  " +
+                                  "       HIST.dt_alt,                                                  " +
+                                  "       HIST.us_alt                                                   " + 
+                                  "       FROM public.crm_historico HIST                                " +
+                                  "       INNER JOIN crm_leads LEAD ON (LEAD.id = HIST.crm_lead_id)     " + 
+                                  "       INNER JOIN entidades ENTI ON (ENTI.id = HIST.entidade_id)     " +
+                                  "       INNER JOIN escritorios ESCR ON (ESCR.id = LEAD.escritorio_id) " +
+                                  "ORDER BY nome ASC                                                    " );
+  if (response.rows.length > 0) {
     return res.status(200).send(response.rows);
   } else {
     return res.status(406).send({ message: "não existe histórico de visita"});
@@ -203,10 +206,36 @@ exports.listVisita = async (req, res) => {
                                   [id]
   );
 
-  if (response.rows.length > 1) {
+  if (response.rows.length > 0) {
     return res.status(200).send(response.rows);
   } else {  
     return res.status(400).send('Histórico de visita não cadastrado!');
+  }
+
+};
+
+// ==> Método responsável por listar a Entidade':
+exports.listServicosVisita = async (req, res) => {
+  const { errors } = validationResult(req);
+  if (errors.length > 0) {
+    return res.status(400).send({ message: errors })
+  }
+
+  const id = parseInt(req.params.id);
+  const response = await db.query("SELECT CRMS.id,                                                   " +
+                                  "       CRMS.crm_historico_id,                                     " +
+                                  "       CRMS.servico_id,                                           " +
+                                  "       SERV.descricao	   	                                       " +
+                                  "       FROM public.crm_servicos CRMS                              " +
+                                  "       INNER JOIN servicos SERV ON (SERV.id = CRMS.servico_id)    " +
+                                  "WHERE CRMS.id = $1                                                ", 
+                                  [id]
+  );
+
+  if (response.rows.length > 0) {
+    return res.status(200).send(response.rows);
+  } else {  
+    return res.status(400).send('Serviço da visita não cadastrado!');
   }
 
 };
