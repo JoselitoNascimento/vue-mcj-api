@@ -214,7 +214,7 @@ exports.listVisita = async (req, res) => {
 
 };
 
-// ==> Método responsável por listar a Entidade':
+// ==> Método responsável por listar os serviços da visita':
 exports.listServicosVisita = async (req, res) => {
   const { errors } = validationResult(req);
   if (errors.length > 0) {
@@ -228,14 +228,39 @@ exports.listServicosVisita = async (req, res) => {
                                   "       SERV.descricao	   	                                       " +
                                   "       FROM public.crm_servicos CRMS                              " +
                                   "       INNER JOIN servicos SERV ON (SERV.id = CRMS.servico_id)    " +
-                                  "WHERE CRMS.id = $1                                                ", 
+                                  "WHERE CRMS.crm_historico_id = $1                                                ", 
                                   [id]
   );
 
   if (response.rows.length > 0) {
     return res.status(200).send(response.rows);
   } else {  
-    return res.status(400).send('Serviço da visita não cadastrado!');
+    return res.status(400).send('Serviços não cadastrados para a visita!');
+  }
+
+};
+
+// ==> Método responsável por listar os posts da visita':
+exports.listPostsVisita = async (req, res) => {
+  const { errors } = validationResult(req);
+  if (errors.length > 0) {
+    return res.status(400).send({ message: errors })
+  }
+
+  const id = parseInt(req.params.id);
+  const response = await db.query("SELECT CRMP.id,                                  " +
+                                  "       CRMP.crm_historico_id,                    " +
+                                  "       to_char(CRMP.data, 'DD-MM-YYYY') as data, " +
+                                  "       CRMP.post                                 " +
+                                  "FROM crm_posts CRMP                              " +
+                                  "WHERE CRMP.crm_historico_id = $1                 ",
+                                  [id]
+  );
+
+  if (response.rows.length > 0) {
+    return res.status(200).send(response.rows);
+  } else {  
+    return res.status(400).send('Posts não cadastrados para a visita!');
   }
 
 };

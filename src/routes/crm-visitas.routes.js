@@ -15,7 +15,10 @@ const visita = require('../controllers/crm-visita.controller');
 router.get('/visitas', visita.listAllVisitas);
 
 // ==> Rota responsável por listar todas os 'leads': (GET): localhost:3000/leads
-router.get('/visitas/:id', visita.listServicosVisita);
+router.get('/visitas_servicos/:id', visita.listServicosVisita);
+
+// ==> Rota responsável por listar todas os 'leads': (GET): localhost:3000/leads
+router.get('/visitas_posts/:id', visita.listPostsVisita);
 
 // ==> Rota responsável por criar um novo 'Lead': (POST): localhost:3000/leads
 router.post('/visitas', [
