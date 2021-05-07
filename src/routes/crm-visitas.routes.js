@@ -29,7 +29,7 @@ router.post('/visitas', [
 ], visita.createVisita);
 
 // ==> Rota responsável por alterar um 'Grupo empresarial': (PUT): localhost:3000/grupos-empresariais
-router.put('/visita', [
+router.put('/visitas', [
   check('crm_lead_id').isInt().withMessage('conteúdo do campo inválido!'),
   check('data').isDate().withMessage('conteúdo do campo inválido!'),
   check('entidade_id').isInt().withMessage('conteúdo do campo inválido!'),

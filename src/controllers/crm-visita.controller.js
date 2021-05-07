@@ -8,9 +8,6 @@ exports.createVisita = async (req, res) => {
     return res.status(400).send({ message: 'Erros ocorridos ao validar campo ' + errors[0].param + ': ' + errors[0].msg});
   }
   try {
-    
-    console.log(JSON.stringify(req.body));
-
     const { crm_lead_id, data, entidade_id, situacao, dt_inc, us_inc } = req.body;
     await db.query('BEGIN');
     const newVisita = await db.query(
@@ -18,7 +15,6 @@ exports.createVisita = async (req, res) => {
       [crm_lead_id, data, entidade_id, situacao, dt_inc, us_inc]
     );
     const newID = newVisita.rows[0].id;
-    console.log(newID);
     // Dados dos serviços
     const { servicos } = req.body;
     if (servicos) {
@@ -65,12 +61,10 @@ exports.updateVisita = async (req, res) => {
   try {
     const { id, crm_lead_id, data, entidade_id, situacao, dt_alt, us_alt } = req.body;
     await db.query('BEGIN');
-    const { rows } = await db.query( 
-      "UPDATE crm_historico SET crm_lead_id =$2, data =$3, situacao =$4, dt_alt = $5, us_alt = $6  WHERE id = $1 ",
+    await db.query( 
+      "UPDATE crm_historico SET crm_lead_id =$2, data =$3, entidade_id =$4, situacao =$5, dt_alt = $6, us_alt = $7 WHERE id = $1 ",
       [ id, crm_lead_id, data, entidade_id, situacao, dt_alt, us_alt ]
     );
-    // Data de inclusão é para as demais tabelas
-    const dt_inc = new Date().toLocaleDateString("pt-BR");
     // Dados do endereço é para todos 
     const { servicos } = req.body;
     if (servicos) {
@@ -79,10 +73,10 @@ exports.updateVisita = async (req, res) => {
         [id]
       );
       for (let index = 0; index < servicos.length; index++) {
-        const { servico_id, situacao } = enderecos[index];
+        const { servico_id } = servicos[index];
         await db.query(
           "INSERT INTO crm_servicos (crm_historico_id, servico_id, situacao, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5)",
-          [ id, servico_id, situacao, dt_inc, us_inc ]
+          [ id, servico_id, situacao, dt_alt, us_alt ]
         );
       }
     }  
@@ -90,14 +84,14 @@ exports.updateVisita = async (req, res) => {
     const { posts } = req.body;
     if (posts) {
       await db.query(
-        "DELETE FROM entidades_oab WHERE entidade_id = $1",
+        "DELETE FROM crm_posts WHERE crm_historico_id = $1",
         [id]
       );
       for (let index = 0; index < posts.length; index++) {
-        const { data, post, situacao } = posts[index];
+        const { data, post } = posts[index];
         await db.query(
           "INSERT INTO crm_posts (crm_historico_id, data, post, situacao, dt_inc, us_inc) VALUES ($1, $2, $3, $4, $5, $6)",
-          [ id, data, post, situacao, dt_inc, us_inc ]
+          [ id, data, post, situacao, dt_alt, us_alt ]
         );
       }  
     }
@@ -106,7 +100,7 @@ exports.updateVisita = async (req, res) => {
     res.status(201).send({
       message: "Histórico de visita alterado com sucesso!",
       body: {
-        localizacao: { id, crm_historico_id, data, post, situacao, dt_inc, us_inc }
+        localizacao: { id, crm_lead_id, data, entidade_id, situacao, dt_alt, us_alt }
       },
     });
 
